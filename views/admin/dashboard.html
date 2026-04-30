@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard - PerpusApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body class="bg-slate-100 flex">
+    <aside class="w-64 bg-slate-900 min-h-screen text-white p-6">
+      <h1 class="text-2xl font-bold mb-10 text-blue-400">AdminPanel</h1>
+      <nav class="space-y-4">
+        <a href="#" class="block py-2 px-4 rounded bg-blue-600">Dashboard</a>
+        <a
+          href="#"
+          class="block py-2 px-4 rounded hover:bg-slate-800 transition"
+          >Buku</a
+        >
+      </nav>
+    </aside>
+
+    <div class="flex-1">
+      <nav class="bg-white shadow h-16 flex justify-between items-center px-8">
+        <h2 class="font-semibold text-slate-600 italic" id="adminName">
+          Memuat...
+        </h2>
+        <button
+          id="btnLogout"
+          class="text-red-500 font-bold hover:text-red-700"
+        >
+          Logout
+        </button>
+      </nav>
+      <main class="p-8">
+        <h3 class="text-2xl font-bold text-slate-800">
+          Manajemen Perpustakaan
+        </h3>
+      </main>
+    </div>
+
+    <script src="../../middleware/middleware.js"></script>
+    <script src="../../Services/apiService.js"></script>
+    <script src="../../Services/authService.js"></script>
+    <script>
+      $(document).ready(function () {
+        if (Middleware.checkAuth()) {
+          Middleware.isAdmin();
+          AuthService.getProfile()
+            .done(function (res) {
+              if (res.success) {
+                // Akses: res -> data -> user -> name
+                $("#adminName").text("Halo Admin, " + res.data.user.name);
+              }
+            })
+            .fail(function (err) {
+              if (err.status === 401) {
+                AuthService.clearSession();
+                window.location.href = "../auth/login.html";
+              }
+            });
+        }
+        $("#btnLogout").on("click", function () {
+          AuthService.logout().always(() => {
+            AuthService.clearSession();
+            window.location.href = "../auth/login.html";
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

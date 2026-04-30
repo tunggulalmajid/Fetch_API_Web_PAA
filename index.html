@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beranda Member - PerpusApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body class="bg-slate-50 min-h-screen">
+    <!-- Navbar -->
+    <nav
+      class="bg-white shadow-sm px-8 py-4 flex justify-between items-center sticky top-0 z-10"
+    >
+      <div class="flex items-center gap-2">
+        <div
+          class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold"
+        >
+          P
+        </div>
+        <h1 class="text-xl font-bold text-slate-800">
+          PerpusApp <span class="text-emerald-600">Member</span>
+        </h1>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="text-right hidden sm:block">
+          <a
+            href="views/user/profile.html"
+            class="block hover:text-blue-600 transition"
+          >
+            <p id="memberName" class="text-sm font-semibold text-slate-700">
+              Memuat...
+            </p>
+            <p id="memberCode" class="text-xs text-slate-500 uppercase">
+              Lihat Profil
+            </p>
+          </a>
+        </div>
+        <button
+          id="btnLogout"
+          class="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition"
+        >
+          Logout
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto p-8">
+      <header class="mb-8">
+        <h2 class="text-3xl font-bold text-slate-800">Katalog Buku Digital</h2>
+        <p class="text-slate-600">
+          Temukan buku favorit Anda dan mulai meminjam secara praktis.
+        </p>
+      </header>
+
+      <!-- Search Bar -->
+      <div class="mb-10 max-w-xl">
+        <input
+          type="text"
+          placeholder="Cari judul buku..."
+          class="w-full px-5 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none shadow-sm transition"
+        />
+      </div>
+
+      <!-- Book Catalog Container -->
+      <div
+        id="bookContainer"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        <!-- Placeholder Loading -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 animate-pulse"
+        >
+          <div class="h-48 bg-slate-200 rounded-lg mb-4"></div>
+          <div class="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
+          <div class="h-3 bg-slate-200 rounded w-1/2"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Scripts: Path langsung karena index.html di root -->
+    <script src="middleware/middleware.js"></script>
+    <script src="Services/apiService.js"></script>
+    <script src="Services/authService.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        // 1. Jalankan Proteksi Middleware
+        if (Middleware.checkAuth()) {
+          // Jika yang masuk adalah admin, lempar ke folder views/admin/
+          const role = localStorage.getItem("user_role");
+          if (role === "admin") {
+            window.location.href = "views/admin/dashboard.html";
+            return;
+          }
+
+          // 2. Ambil data profil berdasarkan token yang valid
+          AuthService.getProfile()
+            .done(function (res) {
+              if (res.success) {
+                // Akses data sesuai struktur: res.data.user
+                $("#memberName").text(res.data.user.name);
+                $("#memberCode").text(res.data.user.memberCode);
+              }
+            })
+            .fail(function (err) {
+              // Jika token expired (401), bersihkan sesi dan balik ke login
+              if (err.status === 401) {
+                AuthService.clearSession();
+                window.location.href = "views/auth/login.html";
+              }
+            });
+        }
+
+        // 3. Logika Logout
+        $("#btnLogout").on("click", function () {
+          if (confirm("Yakin ingin keluar dari akun?")) {
+            AuthService.logout().always(function () {
+              AuthService.clearSession();
+              window.location.href = "views/auth/login.html";
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
