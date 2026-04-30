@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Buku - PerpusApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body
+    class="bg-slate-950 text-slate-200 min-h-screen font-sans bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.15),rgba(255,255,255,0))]"
+  >
+    <!-- Navbar (Glassmorphism) -->
+    <nav
+      class="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-lg border-b border-slate-700/50 shadow-lg px-6 py-4 flex justify-between items-center"
+    >
+      <a
+        href="../../index.html"
+        class="text-blue-400 hover:text-blue-300 font-bold flex items-center gap-2 transition-colors group"
+      >
+        <span class="transform group-hover:-translate-x-1 transition-transform"
+          >←</span
+        >
+        Kembali ke Katalog
+      </a>
+      <h1 class="text-xl font-bold text-white tracking-wide">
+        Detail <span class="text-blue-500">Buku</span>
+      </h1>
+    </nav>
+
+    <!-- State Loading -->
+    <div
+      id="loadingState"
+      class="flex justify-center items-center min-h-[60vh]"
+    >
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"
+      ></div>
+    </div>
+
+    <!-- Main Content (Sembunyi saat loading) -->
+    <main id="mainContent" class="max-w-6xl mx-auto p-6 sm:p-8 mt-4 hidden">
+      <div
+        class="bg-white/5 border border-white/10 rounded-3xl shadow-2xl backdrop-blur-xl overflow-hidden p-6 md:p-10"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+          <!-- Left Column: Cover Image -->
+          <div class="md:col-span-4 lg:col-span-3 flex flex-col gap-4">
+            <div
+              class="aspect-[2/3] bg-slate-800 rounded-2xl overflow-hidden relative shadow-lg shadow-black/50"
+            >
+              <img
+                id="bookCover"
+                src=""
+                alt="Cover Buku"
+                class="w-full h-full object-cover"
+              />
+
+              <!-- Badge Tersedia/Habis diletakkan di atas gambar -->
+              <div
+                id="badgeStatus"
+                class="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-lg backdrop-blur-md border"
+              >
+                --
+              </div>
+            </div>
+
+            <!-- Tombol Aksi Utama -->
+            <button
+              id="btnBorrow"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-blue-600/30 active:scale-95 flex justify-center items-center gap-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                ></path>
+              </svg>
+              Pinjam Buku Ini
+            </button>
+          </div>
+
+          <!-- Right Column: Detail Information -->
+          <div class="md:col-span-8 lg:col-span-9 flex flex-col">
+            <!-- Category & Rating -->
+            <div class="flex items-center gap-3 mb-3">
+              <span
+                id="bookCategory"
+                class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+              >
+                --
+              </span>
+              <div
+                class="flex items-center text-yellow-500 text-sm font-bold gap-1"
+              >
+                ⭐ <span id="bookRating">0.0</span>
+                <span class="text-slate-500 font-normal ml-1"
+                  >(<span id="bookReviews">0</span> Ulasan)</span
+                >
+              </div>
+            </div>
+
+            <h1
+              id="bookTitle"
+              class="text-3xl md:text-4xl font-bold text-white mb-2 leading-tight"
+            >
+              Memuat Judul...
+            </h1>
+            <p class="text-xl text-slate-400 mb-6 flex items-center gap-2">
+              Oleh
+              <span
+                id="bookAuthor"
+                class="text-blue-400 font-semibold hover:underline cursor-pointer"
+                >--</span
+              >
+            </p>
+
+            <!-- Description -->
+            <div class="mb-8">
+              <h3
+                class="text-lg font-bold text-white mb-2 border-b border-slate-700 pb-2"
+              >
+                Sinopsis
+              </h3>
+              <p
+                id="bookDescription"
+                class="text-slate-300 leading-relaxed whitespace-pre-line"
+              >
+                Memuat deskripsi buku...
+              </p>
+            </div>
+
+            <!-- Metadata Grid -->
+            <div
+              class="grid grid-cols-2 sm:grid-cols-4 gap-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-700/50 mt-auto"
+            >
+              <div>
+                <p
+                  class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+                >
+                  Tahun Terbit
+                </p>
+                <p id="bookYear" class="text-slate-200 font-medium">--</p>
+              </div>
+              <div>
+                <p
+                  class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+                >
+                  Penerbit
+                </p>
+                <p
+                  id="bookPublisher"
+                  class="text-slate-200 font-medium line-clamp-1"
+                >
+                  --
+                </p>
+              </div>
+              <div>
+                <p
+                  class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+                >
+                  Halaman
+                </p>
+                <p id="bookPages" class="text-slate-200 font-medium">--</p>
+              </div>
+              <div>
+                <p
+                  class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+                >
+                  ISBN
+                </p>
+                <p
+                  id="bookIsbn"
+                  class="text-slate-200 font-medium font-mono text-sm"
+                >
+                  --
+                </p>
+              </div>
+              <div>
+                <p
+                  class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+                >
+                  Lokasi Rak
+                </p>
+                <p
+                  id="bookLocation"
+                  class="text-blue-400 font-bold bg-blue-500/10 px-2 py-0.5 rounded inline-block"
+                >
+                  --
+                </p>
+              </div>
+              <div>
+                <p
+                  class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
+                >
+                  Ketersediaan
+                </p>
+                <p class="text-slate-200 font-medium">
+                  <span id="bookAvailable" class="text-white font-bold"
+                    >--</span
+                  >
+                  dari <span id="bookTotal">--</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../../middleware/middleware.js"></script>
+    <script src="../../Services/apiService.js"></script>
+    <script src="../../Services/authService.js"></script>
+    <script src="../../Services/bookService.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        // Cek Auth
+        if (typeof Middleware !== "undefined") Middleware.checkAuth();
+
+        // 1. Ambil ID Buku dari URL parameter (?id=...)
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get("id");
+
+        // Jika tidak ada ID, kembalikan ke beranda
+        if (!bookId) {
+          alert("Buku tidak ditemukan!");
+          window.location.href = "../../index.html";
+          return;
+        }
+
+        // 2. Panggil API Detail Buku
+        if (typeof BookService !== "undefined") {
+          BookService.getBookById(bookId)
+            .done(function (res) {
+              if (res.data && res.data.book) {
+                renderBookDetail(res.data.book);
+
+                // Sembunyikan loading, tampilkan konten
+                $("#loadingState").hide();
+                $("#mainContent").fadeIn();
+              }
+            })
+            .fail(function (err) {
+              alert(
+                "Gagal memuat detail buku: " +
+                  (err.responseJSON?.message || "Kesalahan server"),
+              );
+              window.location.href = "../../index.html";
+            });
+        }
+
+        // 3. Fungsi Render HTML
+        function renderBookDetail(book) {
+          // Setup Teks & Metadata
+          $("#bookTitle").text(book.title);
+          $("#bookAuthor").text(book.author || "Anonim");
+          $("#bookDescription").text(
+            book.description || "Tidak ada sinopsis tersedia untuk buku ini.",
+          );
+          $("#bookYear").text(book.publishYear || "-");
+          $("#bookPublisher").text(book.publisher || "-");
+          $("#bookPages").text(book.pages ? `${book.pages} Hlm` : "-");
+          $("#bookIsbn").text(book.isbn || "-");
+          $("#bookLocation").text(book.location || "Gudang");
+          $("#bookRating").text(book.rating || "0");
+          $("#bookReviews").text(book.totalReviews || "0");
+
+          $("#bookAvailable").text(book.availableCopies || 0);
+          $("#bookTotal").text(book.totalCopies || 0);
+
+          // Kategori
+          if (book.category) {
+            $("#bookCategory").text(book.category);
+          }
+
+          // Gambar Cover
+          let coverImage = book.coverImage;
+          if (
+            !coverImage ||
+            coverImage === "string" ||
+            coverImage === "----" ||
+            coverImage === ""
+          ) {
+            const initials =
+              book.title
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .substring(0, 2)
+                .toUpperCase() || "BK";
+            coverImage = `https://ui-avatars.com/api/?name=${initials}&background=1e293b&color=94a3b8&size=500&font-size=0.33`;
+          }
+          $("#bookCover").attr("src", coverImage);
+
+          // Logika Ketersediaan & Tombol Pinjam
+          const $badge = $("#badgeStatus");
+          const $btnBorrow = $("#btnBorrow");
+          const isAvailable = book.availableCopies > 0;
+
+          if (isAvailable && book.isActive) {
+            $badge
+              .text("Tersedia")
+              .addClass("bg-emerald-500/80 border-emerald-400 text-white");
+            $btnBorrow
+              .removeClass("opacity-50 cursor-not-allowed hover:bg-slate-700")
+              .text("Pinjam Buku Ini");
+
+            // Event klik tombol pinjam (bisa dihubungkan ke API peminjaman nanti)
+            $btnBorrow.on("click", function () {
+              // Contoh placeholder untuk fitur selanjutnya
+              alert(
+                `Proses peminjaman buku: ${book.title} (ID: ${book._id}) akan segera dibuat!`,
+              );
+            });
+          } else {
+            $badge
+              .text(book.isActive ? "Habis Dipinjam" : "Tidak Aktif")
+              .addClass("bg-red-500/80 border-red-400 text-white");
+            $btnBorrow
+              .addClass(
+                "opacity-50 cursor-not-allowed bg-slate-700 text-slate-400 hover:bg-slate-700 shadow-none",
+              )
+              .removeClass("bg-blue-600 hover:bg-blue-700 shadow-lg")
+              .prop("disabled", true)
+              .text(book.isActive ? "Stok Habis" : "Buku Dinonaktifkan");
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
