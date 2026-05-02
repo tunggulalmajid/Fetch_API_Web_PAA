@@ -48,17 +48,24 @@
             >
           </div>
           <div class="hidden md:flex items-center gap-5">
-            <div class="text-right">
-              <p id="memberName" class="text-sm font-semibold text-slate-100">
+            <!-- REVISI: href mengarah ke profile.html -->
+            <a
+              href="views/user/profile.html"
+              class="text-right group cursor-pointer"
+            >
+              <p
+                id="memberName"
+                class="text-sm font-semibold text-slate-100 group-hover:text-blue-400 transition-colors"
+              >
                 Memuat...
               </p>
               <p
                 id="memberCode"
-                class="text-[10px] text-slate-400 uppercase font-mono tracking-wider"
+                class="text-[10px] text-slate-400 uppercase font-mono tracking-wider group-hover:text-slate-300"
               >
-                Member
+                Profil Saya
               </p>
-            </div>
+            </a>
             <button
               id="btnLogout"
               class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition-all border border-red-500/20"
@@ -110,9 +117,14 @@
             class="block px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800"
             >Tagihan</a
           >
+          <a
+            href="views/user/profile.html"
+            class="block px-4 py-3 rounded-xl text-emerald-400 font-bold hover:bg-slate-800 border border-emerald-500/20 mt-4"
+            >Profil Saya</a
+          >
           <button
             id="btnMobileLogout"
-            class="w-full text-left px-4 py-3 rounded-xl text-red-400 font-bold border border-red-500/20 mt-4"
+            class="w-full text-left px-4 py-3 rounded-xl text-red-400 font-bold border border-red-500/20 mt-2"
           >
             Keluar
           </button>

@@ -8,10 +8,10 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   </head>
   <body
-    class="bg-slate-950 text-slate-200 min-h-screen font-sans bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.15),rgba(255,255,255,0))] relative"
+    class="bg-slate-950 text-slate-200 min-h-screen font-sans bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.2),rgba(255,255,255,0))]"
   >
     <nav
-      class="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-lg border-b border-slate-700/50 shadow-lg"
+      class="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-xl border-b border-slate-700/50 shadow-lg"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
@@ -21,7 +21,7 @@
             >
               P
             </div>
-            <h1 class="text-xl font-bold text-white">
+            <h1 class="text-xl font-bold text-white tracking-wide">
               Perpus<span class="text-blue-500">App</span>
             </h1>
           </div>
@@ -31,7 +31,9 @@
               class="text-slate-300 hover:text-white transition-colors"
               >Beranda</a
             >
-            <a href="#" class="text-blue-400 font-medium transition-colors"
+            <a
+              href="#"
+              class="text-blue-400 font-bold border-b-2 border-blue-500 pb-1"
               >Peminjamanku</a
             >
             <a
@@ -46,17 +48,24 @@
             >
           </div>
           <div class="hidden md:flex items-center gap-5">
-            <a href="#" class="text-right group"
-              ><p id="memberName" class="text-sm font-semibold text-slate-100">
+            <!-- REVISI: href mengarah ke profile.html -->
+            <a href="profile.html" class="text-right group cursor-pointer">
+              <p
+                id="memberName"
+                class="text-sm font-semibold text-slate-100 group-hover:text-blue-400 transition-colors"
+              >
                 Memuat...
               </p>
-              <p id="memberCode" class="text-xs text-slate-400 uppercase">
-                Profil
-              </p></a
-            >
+              <p
+                id="memberCode"
+                class="text-[10px] text-slate-400 uppercase font-mono tracking-wider group-hover:text-slate-300"
+              >
+                Profil Saya
+              </p>
+            </a>
           </div>
           <div class="md:hidden flex items-center">
-            <button id="mobileMenuBtn" class="text-slate-300 hover:text-white">
+            <button id="mobileMenuBtn" class="text-slate-300">
               <svg
                 class="w-7 h-7"
                 fill="none"
@@ -76,53 +85,52 @@
       </div>
       <div
         id="mobileMenu"
-        class="hidden md:hidden bg-slate-800/95 backdrop-blur-xl border-b border-slate-700"
+        class="hidden md:hidden bg-slate-900/95 backdrop-blur-xl border-b border-slate-700"
       >
-        <div class="px-4 pt-2 pb-4 space-y-1 sm:px-3">
+        <div class="px-4 pt-2 pb-6 space-y-2">
           <a
             href="../../index.html"
-            class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700"
+            class="block px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800"
             >Beranda</a
           >
           <a
             href="#"
-            class="block px-3 py-2 rounded-md text-base font-medium text-blue-400 bg-slate-700/50"
+            class="block px-4 py-3 rounded-xl bg-blue-600/20 text-blue-400 font-bold"
             >Peminjamanku</a
           >
           <a
             href="history.html"
-            class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700"
+            class="block px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800"
             >Riwayat</a
           >
           <a
             href="fines.html"
-            class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-700"
+            class="block px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800"
             >Tagihan</a
+          >
+          <a
+            href="profile.html"
+            class="block px-4 py-3 rounded-xl text-emerald-400 font-bold hover:bg-slate-800 border border-emerald-500/20 mt-4"
+            >Profil Saya</a
           >
         </div>
       </div>
     </nav>
 
     <main class="max-w-7xl mx-auto p-6 sm:p-8">
-      <header class="mb-8">
-        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">
-          Buku Sedang Dipinjam
+      <header class="mb-10 text-center sm:text-left">
+        <h2 class="text-4xl font-extrabold text-white mb-2">
+          Sedang <span class="text-blue-500">Dipinjam</span>
         </h2>
-        <p class="text-slate-400 text-sm md:text-base">
-          Kembalikan buku sebelum tenggat waktu untuk menghindari denda.
+        <p class="text-slate-400">
+          Pastikan untuk mengembalikan buku tepat waktu untuk menghindari sanksi
+          denda.
         </p>
       </header>
-
       <div
         id="activeLoansContainer"
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
-        <div class="col-span-full flex justify-center py-12">
-          <div
-            class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"
-          ></div>
-        </div>
-      </div>
+      ></div>
     </main>
 
     <script src="../../middleware/middleware.js"></script>
@@ -145,22 +153,21 @@
           });
         }
 
-        function fetchActiveLoans() {
+        function fetchLoans() {
           $("#activeLoansContainer").html(
-            `<div class="col-span-full flex justify-center py-12"><div class="animate-spin h-12 w-12 border-b-2 border-blue-500 rounded-full"></div></div>`,
+            `<div class="col-span-full flex justify-center py-20"><div class="animate-spin h-12 w-12 border-b-2 border-blue-500 rounded-full"></div></div>`,
           );
           LoanService.getMyLoans({ status: "borrowed" })
             .done((res) => {
-              const loans = res.data?.loans || [];
-              if (loans.length > 0) renderLoans(loans);
+              if (res.data?.loans?.length > 0) renderLoans(res.data.loans);
               else
                 $("#activeLoansContainer").html(
-                  `<div class="col-span-full text-center py-16 bg-slate-900/40 rounded-3xl border border-slate-700/50"><div class="text-6xl mb-4">📚</div><h3 class="text-xl font-bold text-white">Tidak ada buku yang sedang dipinjam</h3></div>`,
+                  `<div class="col-span-full text-center py-20 bg-white/5 rounded-3xl border border-white/10 shadow-2xl"><div class="text-6xl mb-6">📚</div><h3 class="text-2xl font-bold text-white mb-2">Kosong</h3><p class="text-slate-500">Anda tidak memiliki pinjaman aktif.</p></div>`,
                 );
             })
             .fail(() =>
               $("#activeLoansContainer").html(
-                '<p class="text-red-400 col-span-full text-center py-10">Gagal memuat data.</p>',
+                '<p class="text-red-400 text-center py-10 col-span-full">Gagal memuat data.</p>',
               ),
             );
         }
@@ -169,48 +176,28 @@
           const $container = $("#activeLoansContainer");
           $container.empty();
           loans.forEach((loan) => {
-            const bookTitle = loan.book?.title || "Buku Dihapus";
             const isOverdue = loan.lateDays > 0;
             const dueStr = new Date(loan.dueDate).toLocaleDateString("id-ID", {
               day: "numeric",
               month: "long",
               year: "numeric",
             });
-
             $container.append(`
-              <div class="bg-slate-900/40 border ${isOverdue ? "border-red-500/50" : "border-blue-500/20"} rounded-2xl p-6 flex flex-col relative overflow-hidden group">
-                <div class="flex justify-between items-start mb-4 relative z-10">
-                  <span class="px-2.5 py-1 rounded-md text-[10px] uppercase font-bold border ${isOverdue ? "bg-red-500/10 text-red-400 border-red-500/20 animate-pulse" : "bg-blue-500/10 text-blue-400 border-blue-500/20"}">${isOverdue ? "Terlambat" : "Aktif"}</span>
-                  <span class="text-xs text-slate-500 font-mono">ID: ${loan._id}</span>
+              <div onclick="window.location.href='loan-detail.html?id=${loan._id}'" class="bg-slate-900/40 border ${isOverdue ? "border-red-500/50" : "border-blue-500/20"} rounded-3xl p-6 hover:bg-slate-900/60 transition-all cursor-pointer group shadow-xl">
+                <div class="flex justify-between items-start mb-6">
+                  <span class="px-3 py-1 rounded-lg text-[10px] font-bold border ${isOverdue ? "bg-red-500/10 text-red-400 border-red-500/30 animate-pulse" : "bg-blue-500/10 text-blue-400 border-blue-500/30"} uppercase">${isOverdue ? "Terlambat" : "Aktif"}</span>
+                  <span class="text-[10px] text-slate-500 font-mono">ID: ${loan._id}</span>
                 </div>
-                <h3 class="font-bold text-white text-lg line-clamp-2 mb-4">${bookTitle}</h3>
-                <div class="bg-slate-950/50 rounded-xl p-4 border border-slate-800 mb-4">
-                  <div class="flex justify-between items-center"><span class="text-xs text-slate-500">Tenggat Waktu</span><span class="text-sm font-bold ${isOverdue ? "text-red-400" : "text-emerald-400"}">${dueStr}</span></div>
+                <h3 class="font-bold text-white text-xl line-clamp-2 mb-4 group-hover:text-blue-400 transition-colors">${loan.book?.title || "Buku Dihapus"}</h3>
+                <div class="bg-slate-950/80 rounded-2xl p-4 border border-slate-800">
+                  <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Tenggat Pengembalian</p>
+                  <p class="text-sm font-bold ${isOverdue ? "text-red-400" : "text-emerald-400"}">${dueStr}</p>
                 </div>
-                <!-- Logika pengembalian disimulasikan dari klik ini (Bisa diarahkan ke detail page) -->
-                <button class="btn-return w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition-all mt-auto" data-id="${loan._id}">Kembalikan Buku</button>
               </div>
             `);
           });
         }
-
-        $(document).on("click", ".btn-return", function () {
-          if (confirm("Yakin ingin mengembalikan buku ini sekarang?")) {
-            const $btn = $(this);
-            $btn.prop("disabled", true).html("Proses...");
-            LoanService.returnBook($(this).data("id"))
-              .done(() => {
-                alert("Sukses dikembalikan!");
-                fetchActiveLoans();
-              })
-              .fail((err) => {
-                alert("Gagal: " + err.responseJSON?.message);
-                $btn.prop("disabled", false).html("Kembalikan Buku");
-              });
-          }
-        });
-
-        fetchActiveLoans();
+        fetchLoans();
       });
     </script>
   </body>
