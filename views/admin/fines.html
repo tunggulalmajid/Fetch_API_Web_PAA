@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kelola Denda - Admin PerpusApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body
+    class="bg-slate-950 text-slate-200 h-screen overflow-hidden font-sans bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.15),rgba(255,255,255,0))] flex"
+  >
+    <!-- Sidebar -->
+    <aside
+      class="w-64 bg-slate-900/80 backdrop-blur-xl border-r border-slate-700/50 flex flex-col hidden md:flex transition-all duration-300 z-20"
+    >
+      <div class="h-16 flex items-center px-6 border-b border-slate-700/50">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold"
+          >
+            A
+          </div>
+          <h1 class="text-xl font-bold text-white">
+            Admin<span class="text-emerald-500">Panel</span>
+          </h1>
+        </div>
+      </div>
+      <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <a
+          href="dashboard.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>📊</span> Dashboard</a
+        >
+        <a
+          href="books.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>📚</span> Kelola Buku</a
+        >
+        <a
+          href="members.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>👥</span> Anggota</a
+        >
+        <a
+          href="loans.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>🔄</span> Peminjaman</a
+        >
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-3 bg-emerald-600/20 text-emerald-400 rounded-xl font-bold border border-emerald-500/30 transition-all"
+          ><span>💰</span> Keuangan & Denda</a
+        >
+      </nav>
+      <div class="p-4 border-t border-slate-700/50">
+        <button
+          id="btnLogout"
+          class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-xl font-bold transition-all border border-red-500/20"
+        >
+          <span>🚪</span> Logout
+        </button>
+      </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+      <header
+        class="h-16 bg-slate-900/50 backdrop-blur-md border-b border-slate-700/50 flex items-center justify-between px-6 z-10"
+      >
+        <div class="flex items-center gap-4">
+          <button
+            id="mobileMenuBtn"
+            class="md:hidden text-slate-300 hover:text-white"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+          <h2 class="text-lg font-bold text-white hidden sm:block">
+            Manajemen Denda
+          </h2>
+        </div>
+      </header>
+
+      <div
+        id="mobileMenu"
+        class="hidden md:hidden absolute top-16 left-0 w-full bg-slate-800/95 backdrop-blur-xl border-b border-slate-700 z-50 shadow-2xl"
+      >
+        <nav class="px-4 pt-2 pb-4 space-y-1 sm:px-3">
+          <a
+            href="dashboard.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >📊 Dashboard</a
+          >
+          <a
+            href="books.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >📚 Kelola Buku</a
+          >
+          <a
+            href="members.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >👥 Anggota</a
+          >
+          <a
+            href="loans.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >🔄 Peminjaman</a
+          >
+          <a
+            href="#"
+            class="block px-3 py-2 bg-emerald-600/20 text-emerald-400 rounded-md font-bold"
+            >💰 Keuangan & Denda</a
+          >
+        </nav>
+      </div>
+
+      <main class="flex-1 overflow-y-auto p-6 md:p-8">
+        <!-- Statistik Cards (Sudah diperbaiki dengan truncate agar tidak jebol layout-nya) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div
+            class="bg-red-500/10 border border-red-500/20 rounded-3xl p-6 flex items-center justify-between overflow-hidden"
+          >
+            <div class="w-[75%]">
+              <p class="text-red-400 text-sm font-bold uppercase mb-1">
+                Belum Dibayar (Unpaid)
+              </p>
+              <h3
+                id="statUnpaidAmount"
+                class="text-3xl font-bold text-white mb-1 truncate"
+              >
+                Rp 0
+              </h3>
+              <p class="text-slate-400 text-xs">
+                <span id="statUnpaidCount" class="font-bold text-slate-300"
+                  >0</span
+                >
+                tagihan
+              </p>
+            </div>
+            <div class="text-5xl opacity-20 flex-shrink-0">🚨</div>
+          </div>
+          <div
+            class="bg-emerald-500/10 border border-emerald-500/20 rounded-3xl p-6 flex items-center justify-between overflow-hidden"
+          >
+            <div class="w-[75%]">
+              <p class="text-emerald-400 text-sm font-bold uppercase mb-1">
+                Sudah Lunas (Paid)
+              </p>
+              <h3
+                id="statPaidAmount"
+                class="text-3xl font-bold text-white mb-1 truncate"
+              >
+                Rp 0
+              </h3>
+              <p class="text-slate-400 text-xs">
+                <span id="statPaidCount" class="font-bold text-slate-300"
+                  >0</span
+                >
+                tagihan
+              </p>
+            </div>
+            <div class="text-5xl opacity-20 flex-shrink-0">✅</div>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6"
+        >
+          <div
+            class="flex bg-slate-900/50 p-1 rounded-xl border border-slate-700"
+          >
+            <select
+              id="filterStatus"
+              class="bg-transparent text-slate-300 text-sm font-bold px-4 py-2 outline-none"
+            >
+              <option value="">Semua Tagihan</option>
+              <option value="unpaid">🔴 Belum Lunas</option>
+              <option value="paid">🟢 Lunas</option>
+            </select>
+          </div>
+          <button
+            id="btnOpenManualModal"
+            class="w-full md:w-auto bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all"
+          >
+            Buat Denda Manual
+          </button>
+        </div>
+
+        <div
+          class="bg-white/5 border border-white/10 rounded-3xl shadow-2xl backdrop-blur-xl overflow-hidden"
+        >
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+              <thead>
+                <tr
+                  class="bg-slate-900/60 border-b border-slate-700/50 text-slate-400 text-xs uppercase"
+                >
+                  <th class="px-6 py-4 font-semibold">Anggota</th>
+                  <th class="px-6 py-4 font-semibold">Nominal & ID Denda</th>
+                  <th class="px-6 py-4 font-semibold">Alasan & ID Transaksi</th>
+                  <th class="px-6 py-4 font-semibold">Status</th>
+                  <th class="px-6 py-4 font-semibold text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody
+                id="finesTableBody"
+                class="text-sm divide-y divide-slate-700/50"
+              >
+                <tr>
+                  <td
+                    colspan="5"
+                    class="px-6 py-12 text-center text-emerald-400"
+                  >
+                    Memuat data...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div
+          id="paginationContainer"
+          class="flex justify-center items-end gap-2 mt-8 mb-4 flex-wrap"
+        ></div>
+      </main>
+    </div>
+
+    <!-- MODAL PEMBAYARAN DENDA -->
+    <div
+      id="payModal"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center overflow-y-auto pt-10 pb-10"
+    >
+      <div
+        class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm"
+        id="payModalBackdrop"
+      ></div>
+      <div
+        class="relative bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl w-full max-w-md mx-4 transform scale-95 opacity-0 transition-all duration-300"
+        id="payModalBox"
+      >
+        <div
+          class="p-6 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30 rounded-t-3xl"
+        >
+          <h3 class="text-xl font-bold text-white">Proses Pembayaran</h3>
+          <button id="btnCancelPayTop" class="text-slate-400 hover:text-white">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <form id="formPayFine" class="p-6">
+          <div class="text-center mb-6">
+            <p class="text-slate-400 text-sm mb-1">
+              Total Tagihan
+              <span id="payMemberName" class="font-bold text-white"
+                >Member</span
+              >
+            </p>
+            <h2
+              id="payAmount"
+              class="text-4xl font-bold text-red-400 font-mono truncate"
+            >
+              Rp 0
+            </h2>
+            <p
+              id="payReason"
+              class="text-sm text-slate-500 mt-2 bg-slate-800 inline-block px-3 py-1 rounded-lg"
+            >
+              Keterlambatan
+            </p>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-300 mb-2"
+                >Metode Pembayaran</label
+              >
+              <!-- VALUE HARUS SAMA PERSIS DENGAN ENUM DI BACKEND (huruf kecil) -->
+              <select
+                id="pMethod"
+                class="w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-xl text-white outline-none"
+              >
+                <option value="tunai">💵 Uang Tunai (Cash)</option>
+                <option value="transfer">🏦 Transfer Bank</option>
+                <option value="lainnya">📱 Lainnya (E-Wallet, dll)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-300 mb-2"
+                >Catatan (Opsional)</label
+              ><input
+                type="text"
+                id="pNotes"
+                class="w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-xl text-white outline-none"
+              />
+            </div>
+          </div>
+          <div
+            class="flex gap-3 justify-end mt-8 pt-6 border-t border-slate-700/50"
+          >
+            <button
+              type="button"
+              id="btnCancelPay"
+              class="px-5 py-2.5 rounded-xl font-bold text-slate-300"
+            >
+              Batal</button
+            ><button
+              type="submit"
+              id="btnSubmitPay"
+              class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl"
+            >
+              Bayar Sekarang
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL DENDA MANUAL -->
+    <div
+      id="manualModal"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center overflow-y-auto pt-10 pb-10"
+    >
+      <div
+        class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm"
+        id="manualModalBackdrop"
+      ></div>
+      <div
+        class="relative bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl w-full max-w-lg mx-4 transform scale-95 opacity-0 transition-all duration-300"
+        id="manualModalBox"
+      >
+        <div
+          class="p-6 border-b border-slate-700/50 flex justify-between items-center bg-amber-500/10 rounded-t-3xl"
+        >
+          <h3 class="text-xl font-bold text-amber-400">Buat Denda Manual</h3>
+          <button
+            id="btnCancelManualTop"
+            class="text-slate-400 hover:text-white"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <form id="formManualFine" class="p-6 space-y-4">
+          <p class="text-sm text-slate-400 mb-4 border-b border-slate-800 pb-4">
+            Tuliskan <b>ID Transaksi Peminjaman</b> (Loan ID) dengan benar.
+          </p>
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-1"
+              >Loan ID <span class="text-red-500">*</span></label
+            ><input
+              type="text"
+              id="mLoanId"
+              placeholder="69f5..."
+              class="w-full px-4 py-2.5 bg-slate-800 border border-slate-600 rounded-xl text-white font-mono text-sm outline-none"
+              required
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-1"
+              >Nominal (Rp) <span class="text-red-500">*</span></label
+            ><input
+              type="number"
+              id="mAmount"
+              min="1000"
+              step="1000"
+              class="w-full px-4 py-2.5 bg-slate-800 border border-slate-600 rounded-xl text-white font-mono text-lg font-bold outline-none"
+              required
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-1"
+              >Alasan <span class="text-red-500">*</span></label
+            ><select
+              id="mReason"
+              class="w-full px-4 py-2.5 bg-slate-800 border border-slate-600 rounded-xl text-white outline-none"
+            >
+              <option value="kerusakan">Buku Rusak</option>
+              <option value="kehilangan">Buku Hilang</option>
+              <option value="lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-1"
+              >Keterangan Tambahan</label
+            ><input
+              type="text"
+              id="mNotes"
+              class="w-full px-4 py-2.5 bg-slate-800 border border-slate-600 rounded-xl text-white outline-none"
+            />
+          </div>
+          <div
+            class="flex gap-3 justify-end mt-8 pt-6 border-t border-slate-700/50"
+          >
+            <button
+              type="button"
+              id="btnCancelManual"
+              class="px-5 py-2.5 rounded-xl font-bold text-slate-300"
+            >
+              Batal</button
+            ><button
+              type="submit"
+              id="btnSubmitManual"
+              class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-6 rounded-xl"
+            >
+              Terapkan Denda
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="../../middleware/middleware.js"></script>
+    <script src="../../Services/apiService.js"></script>
+    <script src="../../Services/authService.js"></script>
+    <script src="../../Services/fineService.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        if (typeof Middleware !== "undefined") Middleware.checkAuth();
+        if (localStorage.getItem("user_role") !== "admin") {
+          window.location.href = "../../index.html";
+          return;
+        }
+        $("#mobileMenuBtn").on("click", () =>
+          $("#mobileMenu").slideToggle("fast"),
+        );
+        $("#btnLogout").on("click", function () {
+          if (confirm("Keluar?")) {
+            AuthService.clearSession();
+            window.location.href = "../auth/login.html";
+          }
+        });
+
+        const formatRp = (num) =>
+          new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            maximumFractionDigits: 0,
+          }).format(num);
+
+        function loadStats() {
+          FineService.getFineStats().done((res) => {
+            if (res.data && res.data.stats) {
+              const s = res.data.stats;
+              const unpaidRp = formatRp(s.unpaid?.amount || 0);
+              const paidRp = formatRp(s.paid?.amount || 0);
+
+              // Tambahkan attribute 'title' supaya saat di-hover tetap bisa dibaca angka aslinya
+              $("#statUnpaidAmount").text(unpaidRp).attr("title", unpaidRp);
+              $("#statUnpaidCount").text(s.unpaid?.count || 0);
+
+              $("#statPaidAmount").text(paidRp).attr("title", paidRp);
+              $("#statPaidCount").text(s.paid?.count || 0);
+            }
+          });
+        }
+
+        let currentStatus = "",
+          currentPage = 1,
+          currentPayId = null;
+
+        function fetchFines(status = "", page = 1) {
+          currentStatus = status;
+          currentPage = page;
+          $("#finesTableBody").html(
+            `<tr><td colspan="5" class="px-6 py-12 text-center text-emerald-400">Memuat...</td></tr>`,
+          );
+          FineService.getFines({
+            page: page,
+            limit: 10,
+            status: status || undefined,
+          })
+            .done((res) => {
+              if (res.data && res.data.fines) {
+                renderFinesTable(res.data.fines);
+                if (res.pagination) renderPagination(res.pagination);
+              } else {
+                $("#finesTableBody").html(
+                  '<tr><td colspan="5" class="text-center py-8 text-slate-500">Kosong.</td></tr>',
+                );
+              }
+            })
+            .fail(() =>
+              $("#finesTableBody").html(
+                '<tr><td colspan="5" class="text-center py-8 text-red-400">Gagal.</td></tr>',
+              ),
+            );
+        }
+
+        function renderFinesTable(fines) {
+          const $tbody = $("#finesTableBody");
+          $tbody.empty();
+          if (fines.length === 0)
+            return $tbody.html(
+              '<tr><td colspan="5" class="text-center py-8 text-slate-400">Kosong.</td></tr>',
+            );
+          fines.forEach((f) => {
+            const isPaid = f.status === "paid";
+            const statusBadge = isPaid
+              ? `<span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-[10px] font-bold">LUNAS</span>`
+              : `<span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-[10px] font-bold">BELUM LUNAS</span>`;
+            const btnPay = !isPaid
+              ? `<button class="btn-pay p-2 bg-blue-500/10 text-blue-400 rounded hover:bg-blue-500 hover:text-white transition-colors" data-id="${f._id}" data-amount="${f.amount}" data-name="${f.member?.name || "User"}" data-reason="${f.reason || "Keterlambatan"}">💳 Bayar</button>`
+              : `<span class="text-slate-600">-</span>`;
+            $tbody.append(`
+              <tr class="hover:bg-slate-800/50 transition-colors">
+                <td class="px-6 py-4"><p class="font-bold text-white">${f.member?.name || "Anonim"}</p><p class="text-[10px] text-slate-400 font-mono">${f.member?.memberCode || "-"}</p></td>
+                <td class="px-6 py-4">
+                  <p class="font-bold font-mono ${isPaid ? "text-emerald-400" : "text-red-400"}">${formatRp(f.amount)}</p>
+                  <p class="text-[10px] text-slate-500 font-mono mt-0.5" title="ID Denda">ID: ${f._id}</p>
+                </td>
+                <td class="px-6 py-4">
+                  <p class="text-sm text-slate-300 capitalize">${f.reason || "Keterlambatan"}</p>
+                  <p class="text-[10px] text-amber-500/80 font-mono mt-1 bg-amber-500/10 inline-block px-1.5 py-0.5 rounded" title="Loan ID">Loan ID: ${f.loan?._id || "-"}</p>
+                </td>
+                <td class="px-6 py-4">${statusBadge}</td>
+                <td class="px-6 py-4 text-center">${btnPay}</td>
+              </tr>
+            `);
+          });
+        }
+
+        function renderPagination(pagination) {
+          const $container = $("#paginationContainer");
+          $container.empty();
+          if (!pagination || pagination.totalPages <= 1) return;
+          const { page, totalPages } = pagination;
+          let html = `<button data-page="${page - 1}" class="page-btn px-4 py-2 border rounded-xl ${page === 1 ? "opacity-50 pointer-events-none" : "bg-slate-900/50 hover:bg-slate-700"}">Prev</button>`;
+          for (
+            let i = Math.max(1, page - 2);
+            i <= Math.min(totalPages, page + 2);
+            i++
+          ) {
+            html += `<button data-page="${i}" class="page-btn w-10 h-10 border rounded-xl font-bold ${i === page ? "bg-emerald-600 text-white" : "bg-slate-900/50 text-slate-300 hover:bg-slate-700"}">${i}</button>`;
+          }
+          html += `<button data-page="${page + 1}" class="page-btn px-4 py-2 border rounded-xl ${page === totalPages ? "opacity-50 pointer-events-none" : "bg-slate-900/50 hover:bg-slate-700"}">Next</button>`;
+          $container.append(html);
+        }
+
+        loadStats();
+        fetchFines();
+        $("#filterStatus").on("change", function () {
+          fetchFines($(this).val(), 1);
+        });
+        $(document).on("click", ".page-btn", function () {
+          fetchFines(currentStatus, $(this).data("page"));
+        });
+
+        function togglePayModal(show) {
+          if (show) {
+            $("#payModal").removeClass("hidden");
+            setTimeout(
+              () => $("#payModalBox").removeClass("scale-95 opacity-0"),
+              10,
+            );
+          } else {
+            $("#payModalBox").addClass("scale-95 opacity-0");
+            setTimeout(() => $("#payModal").addClass("hidden"), 300);
+          }
+        }
+        $("#btnCancelPay, #btnCancelPayTop, #payModalBackdrop").on(
+          "click",
+          () => togglePayModal(false),
+        );
+
+        $(document).on("click", ".btn-pay", function () {
+          currentPayId = $(this).data("id");
+          $("#payMemberName").text($(this).data("name"));
+          $("#payAmount").text(formatRp($(this).data("amount")));
+          $("#payReason").text($(this).data("reason").toUpperCase());
+          $("#formPayFine")[0].reset();
+          togglePayModal(true);
+        });
+
+        $("#formPayFine").on("submit", function (e) {
+          e.preventDefault();
+          const $btn = $("#btnSubmitPay");
+          $btn.prop("disabled", true).html("Proses...");
+
+          FineService.payFine(currentPayId, {
+            paymentMethod: $("#pMethod").val(),
+            notes: $("#pNotes").val(),
+          })
+            .done(() => {
+              alert("Sukses!");
+              togglePayModal(false);
+              loadStats();
+              fetchFines(currentStatus, currentPage);
+            })
+            .fail((err) => alert("Gagal: " + err.responseJSON?.message))
+            .always(() => $btn.prop("disabled", false).html("Bayar Sekarang"));
+        });
+
+        function toggleManualModal(show) {
+          if (show) {
+            $("#manualModal").removeClass("hidden");
+            setTimeout(
+              () => $("#manualModalBox").removeClass("scale-95 opacity-0"),
+              10,
+            );
+          } else {
+            $("#manualModalBox").addClass("scale-95 opacity-0");
+            setTimeout(() => $("#manualModal").addClass("hidden"), 300);
+          }
+        }
+        $("#btnOpenManualModal").on("click", () => {
+          $("#formManualFine")[0].reset();
+          toggleManualModal(true);
+        });
+        $("#btnCancelManual, #btnCancelManualTop, #manualModalBackdrop").on(
+          "click",
+          () => toggleManualModal(false),
+        );
+
+        $("#formManualFine").on("submit", function (e) {
+          e.preventDefault();
+          const $btn = $("#btnSubmitManual");
+          $btn.prop("disabled", true).html("Proses...");
+
+          FineService.createManualFine({
+            loanId: $("#mLoanId").val().trim(),
+            amount: parseInt($("#mAmount").val()),
+            reason: $("#mReason").val(),
+            notes: $("#mNotes").val(),
+          })
+            .done(() => {
+              alert("Denda dibuat!");
+              toggleManualModal(false);
+              loadStats();
+              fetchFines(currentStatus, 1);
+            })
+            .fail((err) =>
+              alert("Gagal: " + (err.responseJSON?.message || "Cek ID")),
+            )
+            .always(() => $btn.prop("disabled", false).html("Terapkan Denda"));
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kelola Peminjaman - Admin PerpusApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body
+    class="bg-slate-950 text-slate-200 h-screen overflow-hidden font-sans bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.15),rgba(255,255,255,0))] flex"
+  >
+    <aside
+      class="w-64 bg-slate-900/80 backdrop-blur-xl border-r border-slate-700/50 flex flex-col hidden md:flex transition-all duration-300 z-20"
+    >
+      <div class="h-16 flex items-center px-6 border-b border-slate-700/50">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold"
+          >
+            A
+          </div>
+          <h1 class="text-xl font-bold text-white">
+            Admin<span class="text-emerald-500">Panel</span>
+          </h1>
+        </div>
+      </div>
+      <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <a
+          href="dashboard.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>📊</span> Dashboard</a
+        >
+        <a
+          href="books.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>📚</span> Kelola Buku</a
+        >
+        <a
+          href="members.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>👥</span> Anggota</a
+        >
+        <a
+          href="#"
+          class="flex items-center gap-3 px-4 py-3 bg-emerald-600/20 text-emerald-400 rounded-xl font-bold border border-emerald-500/30 transition-all"
+          ><span>🔄</span> Peminjaman</a
+        >
+        <a
+          href="fines.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>💰</span> Keuangan & Denda</a
+        >
+      </nav>
+      <div class="p-4 border-t border-slate-700/50">
+        <button
+          id="btnLogout"
+          class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-xl font-bold transition-all border border-red-500/20"
+        >
+          <span>🚪</span> Logout
+        </button>
+      </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+      <header
+        class="h-16 bg-slate-900/50 backdrop-blur-md border-b border-slate-700/50 flex items-center justify-between px-6 z-30"
+      >
+        <div class="flex items-center gap-4">
+          <button
+            id="mobileMenuBtn"
+            class="md:hidden text-slate-300 hover:text-white"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+          <h2 class="text-lg font-bold text-white hidden sm:block">
+            Manajemen Peminjaman
+          </h2>
+        </div>
+      </header>
+      <div
+        id="mobileMenu"
+        class="hidden md:hidden absolute top-16 left-0 w-full bg-slate-800/95 backdrop-blur-xl border-b border-slate-700 z-40 shadow-2xl"
+      >
+        <nav class="px-4 pt-2 pb-4 space-y-1 sm:px-3">
+          <a
+            href="dashboard.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >📊 Dashboard</a
+          >
+          <a
+            href="books.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >📚 Kelola Buku</a
+          >
+          <a
+            href="members.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >👥 Anggota</a
+          >
+          <a
+            href="#"
+            class="block px-3 py-2 bg-emerald-600/20 text-emerald-400 rounded-md font-bold"
+            >🔄 Peminjaman</a
+          >
+          <a
+            href="fines.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >💰 Keuangan & Denda</a
+          >
+        </nav>
+      </div>
+
+      <main class="flex-1 overflow-y-auto p-6 md:p-8">
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8"
+        >
+          <div>
+            <h3 class="text-2xl font-bold text-white mb-1">Daftar Transaksi</h3>
+          </div>
+          <div
+            class="flex bg-slate-900/50 p-1 rounded-xl border border-slate-700 backdrop-blur-sm"
+          >
+            <select
+              id="filterStatus"
+              class="bg-transparent text-slate-300 text-sm font-bold px-4 py-2 outline-none cursor-pointer"
+            >
+              <option value="">Semua Transaksi</option>
+              <option value="borrowed">🔵 Sedang Dipinjam</option>
+              <option value="overdue">🔴 Terlambat (Overdue)</option>
+              <option value="returned">⚪ Sudah Kembali</option>
+            </select>
+          </div>
+        </div>
+
+        <div
+          class="bg-white/5 border border-white/10 rounded-3xl shadow-2xl backdrop-blur-xl overflow-hidden"
+        >
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+              <thead>
+                <tr
+                  class="bg-slate-900/60 border-b border-slate-700/50 text-slate-400 text-xs uppercase tracking-wider"
+                >
+                  <th class="px-6 py-4 font-semibold">Kode & ID Pinjam</th>
+                  <th class="px-6 py-4 font-semibold">Peminjam</th>
+                  <th class="px-6 py-4 font-semibold">Buku</th>
+                  <th class="px-6 py-4 font-semibold">Tenggat</th>
+                  <th class="px-6 py-4 font-semibold">Status</th>
+                  <th class="px-6 py-4 font-semibold text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody
+                id="loansTableBody"
+                class="text-sm divide-y divide-slate-700/50"
+              >
+                <tr>
+                  <td
+                    colspan="6"
+                    class="px-6 py-12 text-center text-emerald-400"
+                  >
+                    Memuat data...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div
+          id="paginationContainer"
+          class="flex justify-center items-end gap-2 mt-8 mb-4 flex-wrap"
+        ></div>
+      </main>
+    </div>
+
+    <!-- MODAL DETAIL TRANSAKSI -->
+    <div
+      id="loanModal"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center overflow-y-auto pt-10 pb-10"
+    >
+      <div
+        class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm"
+        id="loanModalBackdrop"
+      ></div>
+      <div
+        class="relative bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl w-full max-w-3xl mx-4 transform scale-95 opacity-0 transition-all duration-300 my-auto"
+        id="loanModalBox"
+      >
+        <div
+          class="flex justify-between items-center p-6 border-b border-slate-700/50"
+        >
+          <div>
+            <h3 class="text-2xl font-bold text-white">Rincian Transaksi</h3>
+            <div class="flex items-center gap-3 mt-1">
+              <p id="mLoanCode" class="text-sm font-mono text-emerald-400">
+                LN-000000
+              </p>
+              <p
+                class="text-[10px] text-amber-400/80 font-mono bg-amber-500/10 px-1.5 py-0.5 rounded"
+                id="mLoanId"
+                title="Loan ID"
+              >
+                ID: -
+              </p>
+              <!-- TAMPILAN ID TRANSAKSI -->
+            </div>
+          </div>
+          <button
+            id="btnCancelModalTop"
+            class="text-slate-400 hover:text-white"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="p-6 space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div
+              class="bg-slate-800/30 p-4 rounded-2xl border border-slate-700/50 relative"
+            >
+              <p
+                class="text-[10px] text-slate-500 uppercase font-bold mb-2 tracking-widest"
+              >
+                Informasi Anggota
+              </p>
+              <p id="mMemberName" class="font-bold text-white text-lg">
+                Nama Anggota
+              </p>
+              <p id="mMemberCode" class="text-slate-400 font-mono text-sm mb-1">
+                MBR-000
+              </p>
+              <p
+                class="text-[10px] text-blue-400/80 font-mono bg-blue-500/10 inline-block px-1.5 py-0.5 rounded mt-1"
+                id="mMemberId"
+              >
+                ID: -
+              </p>
+              <!-- ID MEMBER DI MODAL -->
+            </div>
+            <div
+              class="bg-slate-800/30 p-4 rounded-2xl border border-slate-700/50 relative"
+            >
+              <p
+                class="text-[10px] text-slate-500 uppercase font-bold mb-2 tracking-widest"
+              >
+                Informasi Buku
+              </p>
+              <p
+                id="mBookTitle"
+                class="font-bold text-white text-lg line-clamp-1"
+              >
+                Judul Buku
+              </p>
+              <p id="mBookAuthor" class="text-slate-400 text-sm mb-1">
+                Penulis
+              </p>
+              <p
+                class="text-[10px] text-emerald-500/80 font-mono bg-emerald-500/10 inline-block px-1.5 py-0.5 rounded mt-1"
+                id="mBookId"
+              >
+                ID: -
+              </p>
+              <!-- ID BUKU DI MODAL -->
+            </div>
+          </div>
+
+          <div
+            class="bg-slate-900/50 p-5 rounded-2xl border border-slate-700/50"
+          >
+            <div
+              class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 pb-4 border-b border-slate-700/50"
+            >
+              <div>
+                <p class="text-[10px] text-slate-500 font-bold">Tgl Pinjam</p>
+                <p id="mLoanDate" class="text-sm font-medium text-slate-200">
+                  -
+                </p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-500 font-bold">Tenggat</p>
+                <p id="mDueDate" class="text-sm font-medium text-slate-200">
+                  -
+                </p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-500 font-bold">Terlambat</p>
+                <p id="mLateDays" class="text-sm font-bold text-slate-200">
+                  0 Hari
+                </p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-500 font-bold">Denda</p>
+                <p
+                  id="mFineAmount"
+                  class="text-sm font-bold font-mono text-slate-200"
+                >
+                  Rp 0
+                </p>
+              </div>
+            </div>
+            <div>
+              <p class="text-[10px] text-slate-500 font-bold mb-1">Catatan</p>
+              <p id="mNotes" class="text-sm text-slate-400 italic">
+                Tidak ada catatan.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex gap-3 justify-end p-6 border-t border-slate-700/50 bg-slate-800/20 rounded-b-3xl"
+        >
+          <button
+            type="button"
+            id="btnCancelModal"
+            class="px-5 py-2.5 rounded-xl font-bold text-slate-300 hover:bg-slate-800 transition-colors"
+          >
+            Tutup
+          </button>
+          <button
+            type="button"
+            id="btnProcessReturn"
+            class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all"
+          >
+            Selesaikan Peminjaman
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../middleware/middleware.js"></script>
+    <script src="../../Services/apiService.js"></script>
+    <script src="../../Services/authService.js"></script>
+    <script src="../../Services/loanService.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        if (typeof Middleware !== "undefined") Middleware.checkAuth();
+        if (localStorage.getItem("user_role") !== "admin") {
+          window.location.href = "../../index.html";
+          return;
+        }
+        $("#mobileMenuBtn").on("click", () =>
+          $("#mobileMenu").slideToggle("fast"),
+        );
+        $("#btnLogout").on("click", function () {
+          if (confirm("Keluar?")) {
+            AuthService.clearSession();
+            window.location.href = "../auth/login.html";
+          }
+        });
+
+        const formatRp = (num) =>
+          new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            maximumFractionDigits: 0,
+          }).format(num);
+        const formatDate = (dateStr) =>
+          dateStr
+            ? new Date(dateStr).toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })
+            : "-";
+
+        let currentStatusFilter = "",
+          currentPage = 1,
+          currentLoanId = null;
+
+        function fetchLoans(status = "", page = 1) {
+          currentStatusFilter = status;
+          currentPage = page;
+          $("#loansTableBody").html(
+            `<tr><td colspan="6" class="px-6 py-12 text-center text-emerald-400">Memuat...</td></tr>`,
+          );
+          let req =
+            status === "overdue"
+              ? LoanService.getOverdueLoans({ page: page, limit: 10 })
+              : LoanService.getAllLoans({
+                  page: page,
+                  limit: 10,
+                  status: status || undefined,
+                });
+          req
+            .done((res) => {
+              if (res.data && res.data.loans) {
+                renderLoansTable(res.data.loans);
+                if (res.pagination) renderPagination(res.pagination);
+              } else {
+                $("#loansTableBody").html(
+                  '<tr><td colspan="6" class="text-center py-8 text-slate-500">Kosong.</td></tr>',
+                );
+              }
+            })
+            .fail(() =>
+              $("#loansTableBody").html(
+                '<tr><td colspan="6" class="text-center py-8 text-red-400">Gagal.</td></tr>',
+              ),
+            );
+        }
+
+        function renderLoansTable(loans) {
+          const $tbody = $("#loansTableBody");
+          $tbody.empty();
+          if (loans.length === 0)
+            return $tbody.html(
+              '<tr><td colspan="6" class="text-center py-8 text-slate-400">Kosong.</td></tr>',
+            );
+          loans.forEach((loan) => {
+            const isOverdue = loan.lateDays > 0 && loan.status === "borrowed";
+            let statusHtml =
+              loan.status === "returned"
+                ? `<span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-[10px] font-bold">Selesai</span>`
+                : isOverdue
+                  ? `<span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-[10px] font-bold animate-pulse">Terlambat</span>`
+                  : `<span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-[10px] font-bold">Dipinjam</span>`;
+            $tbody.append(`
+              <tr class="${isOverdue ? "bg-red-500/5 hover:bg-red-500/10" : "hover:bg-slate-800/50"} transition-colors group">
+                <td class="px-6 py-4">
+                  <p class="font-mono text-xs text-slate-300">${loan.loanCode || "-"}</p>
+                  <!-- TAMPILAN ID TRANSAKSI (LOAN ID) -->
+                  <p class="text-[10px] text-amber-500/80 font-mono mt-1 bg-amber-500/10 inline-block px-1.5 py-0.5 rounded" title="Loan ID">ID: ${loan._id}</p>
+                </td>
+                <td class="px-6 py-4 font-bold text-white truncate max-w-[150px]">${loan.member?.name || "Anonim"}</td>
+                <td class="px-6 py-4 text-slate-300 truncate max-w-[220px]">${loan.book?.title || "Dihapus"}</td>
+                <td class="px-6 py-4 text-xs ${isOverdue ? "text-red-400 font-bold" : "text-slate-400"}">${formatDate(loan.dueDate)}</td>
+                <td class="px-6 py-4">${statusHtml}</td>
+                <td class="px-6 py-4 text-center"><button class="btn-detail p-2 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white rounded" data-id="${loan._id}">🔍</button></td>
+              </tr>
+            `);
+          });
+        }
+
+        function renderPagination(pagination) {
+          const $container = $("#paginationContainer");
+          $container.empty();
+          if (!pagination || pagination.totalPages <= 1) return;
+          const { page, totalPages } = pagination;
+          let html = `<button data-page="${page - 1}" class="page-btn px-4 py-2 border rounded-xl ${page === 1 ? "opacity-50 pointer-events-none" : "bg-slate-900/50 hover:bg-slate-700"}">Prev</button>`;
+          let startPage = Math.max(1, page - 2);
+          let endPage = Math.min(totalPages, page + 2);
+          if (startPage > 1)
+            html += `<button data-page="1" class="page-btn w-10 h-10 border border-slate-700 rounded-xl bg-slate-900/50 text-slate-300">1</button><span class="text-slate-500 px-1 flex items-end mb-2 tracking-widest">...</span>`;
+          for (let i = startPage; i <= endPage; i++) {
+            const activeClass =
+              i === page
+                ? "bg-emerald-600 text-white border-emerald-500 shadow-lg shadow-emerald-500/30"
+                : "bg-slate-900/50 border-slate-700 text-slate-300 hover:bg-slate-700";
+            html += `<button data-page="${i}" class="page-btn w-10 h-10 border rounded-xl font-bold transition-all flex items-center justify-center ${activeClass}">${i}</button>`;
+          }
+          if (endPage < totalPages)
+            html += `<span class="text-slate-500 px-1 flex items-end mb-2 tracking-widest">...</span><button data-page="${totalPages}" class="page-btn w-10 h-10 border border-slate-700 rounded-xl bg-slate-900/50 text-slate-300">${totalPages}</button>`;
+          html += `<button data-page="${page + 1}" class="page-btn px-4 py-2 border rounded-xl ${page === totalPages ? "opacity-50 pointer-events-none" : "bg-slate-900/50 hover:bg-slate-700"}">Next</button>`;
+          $container.append(html);
+        }
+
+        function openModal() {
+          $("#loanModal").removeClass("hidden");
+          setTimeout(
+            () =>
+              $("#loanModalBox")
+                .removeClass("scale-95 opacity-0")
+                .addClass("scale-100 opacity-100"),
+            10,
+          );
+        }
+        function closeModal() {
+          $("#loanModalBox")
+            .removeClass("scale-100 opacity-100")
+            .addClass("scale-95 opacity-0");
+          setTimeout(() => $("#loanModal").addClass("hidden"), 300);
+        }
+        $("#btnCancelModal, #btnCancelModalTop, #loanModalBackdrop").on(
+          "click",
+          closeModal,
+        );
+
+        $(document).on("click", ".btn-detail", function () {
+          const id = $(this).data("id");
+          currentLoanId = id;
+          const $btn = $(this);
+          $btn.html("⏳");
+          LoanService.getLoanById(id)
+            .done((res) => {
+              if (res.data && res.data.loan) {
+                const loan = res.data.loan;
+                $("#mLoanCode").text(loan.loanCode || "-");
+                $("#mLoanId").text("ID: " + loan._id); // LOAN ID
+                $("#mMemberName").text(loan.member?.name || "Anonim");
+                $("#mMemberCode").text(loan.member?.memberCode || "-");
+                $("#mMemberId").text("ID: " + (loan.member?._id || "-")); // MEMBER ID
+                $("#mBookTitle").text(loan.book?.title || "Dihapus");
+                $("#mBookAuthor").text(loan.book?.author || "-");
+                $("#mBookId").text("ID: " + (loan.book?._id || "-")); // BOOK ID
+                $("#mLoanDate").text(formatDate(loan.loanDate));
+                $("#mDueDate").text(formatDate(loan.dueDate));
+                $("#mLateDays").text(loan.lateDays + " Hari");
+                $("#mFineAmount").text(formatRp(loan.fineAmount));
+                $("#mNotes").text(
+                  loan.notes && loan.notes !== "string"
+                    ? loan.notes
+                    : "Tidak ada.",
+                );
+                if (loan.status === "borrowed") {
+                  $("#btnProcessReturn").removeClass("hidden").show();
+                } else {
+                  $("#btnProcessReturn").hide();
+                }
+                openModal();
+              }
+            })
+            .always(() => $btn.html("🔍"));
+        });
+
+        $("#btnProcessReturn").on("click", function () {
+          if (!confirm("Yakin?")) return;
+          const $btn = $(this);
+          $btn.prop("disabled", true).html("Proses...");
+          LoanService.returnBook(currentLoanId)
+            .done(() => {
+              alert("Berhasil!");
+              closeModal();
+              fetchLoans(currentStatusFilter, currentPage);
+            })
+            .always(() => $btn.prop("disabled", false).html("Selesai"));
+        });
+
+        fetchLoans();
+        $("#filterStatus").on("change", function () {
+          fetchLoans($(this).val(), 1);
+        });
+        $(document).on("click", ".page-btn", function () {
+          fetchLoans(currentStatusFilter, $(this).data("page"));
+        });
+      });
+    </script>
+  </body>
+</html>

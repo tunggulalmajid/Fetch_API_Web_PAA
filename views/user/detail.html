@@ -8,11 +8,11 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   </head>
   <body
-    class="bg-slate-950 text-slate-200 min-h-screen font-sans bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.15),rgba(255,255,255,0))]"
+    class="bg-slate-950 text-slate-200 min-h-screen font-sans bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.15),rgba(255,255,255,0))] relative"
   >
-    <!-- Navbar (Glassmorphism) -->
+    <!-- Navbar -->
     <nav
-      class="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-lg border-b border-slate-700/50 shadow-lg px-6 py-4 flex justify-between items-center"
+      class="sticky top-0 z-40 bg-slate-900/70 backdrop-blur-lg border-b border-slate-700/50 shadow-lg px-6 py-4 flex justify-between items-center"
     >
       <a
         href="../../index.html"
@@ -38,13 +38,13 @@
       ></div>
     </div>
 
-    <!-- Main Content (Sembunyi saat loading) -->
+    <!-- Main Content -->
     <main id="mainContent" class="max-w-6xl mx-auto p-6 sm:p-8 mt-4 hidden">
       <div
         class="bg-white/5 border border-white/10 rounded-3xl shadow-2xl backdrop-blur-xl overflow-hidden p-6 md:p-10"
       >
         <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
-          <!-- Left Column: Cover Image -->
+          <!-- Kolom Kiri: Cover Image & Tombol -->
           <div class="md:col-span-4 lg:col-span-3 flex flex-col gap-4">
             <div
               class="aspect-[2/3] bg-slate-800 rounded-2xl overflow-hidden relative shadow-lg shadow-black/50"
@@ -55,8 +55,6 @@
                 alt="Cover Buku"
                 class="w-full h-full object-cover"
               />
-
-              <!-- Badge Tersedia/Habis diletakkan di atas gambar -->
               <div
                 id="badgeStatus"
                 class="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-lg backdrop-blur-md border"
@@ -64,10 +62,8 @@
                 --
               </div>
             </div>
-
-            <!-- Tombol Aksi Utama -->
             <button
-              id="btnBorrow"
+              id="btnOpenBorrowModal"
               class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-blue-600/30 active:scale-95 flex justify-center items-center gap-2"
             >
               <svg
@@ -87,16 +83,14 @@
             </button>
           </div>
 
-          <!-- Right Column: Detail Information -->
+          <!-- Kolom Kanan: Informasi Detail -->
           <div class="md:col-span-8 lg:col-span-9 flex flex-col">
-            <!-- Category & Rating -->
             <div class="flex items-center gap-3 mb-3">
               <span
                 id="bookCategory"
                 class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+                >--</span
               >
-                --
-              </span>
               <div
                 class="flex items-center text-yellow-500 text-sm font-bold gap-1"
               >
@@ -106,7 +100,6 @@
                 >
               </div>
             </div>
-
             <h1
               id="bookTitle"
               class="text-3xl md:text-4xl font-bold text-white mb-2 leading-tight"
@@ -121,8 +114,6 @@
                 >--</span
               >
             </p>
-
-            <!-- Description -->
             <div class="mb-8">
               <h3
                 class="text-lg font-bold text-white mb-2 border-b border-slate-700 pb-2"
@@ -136,8 +127,6 @@
                 Memuat deskripsi buku...
               </p>
             </div>
-
-            <!-- Metadata Grid -->
             <div
               class="grid grid-cols-2 sm:grid-cols-4 gap-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-700/50 mt-auto"
             >
@@ -174,19 +163,6 @@
                 <p
                   class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
                 >
-                  ISBN
-                </p>
-                <p
-                  id="bookIsbn"
-                  class="text-slate-200 font-medium font-mono text-sm"
-                >
-                  --
-                </p>
-              </div>
-              <div>
-                <p
-                  class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
-                >
                   Lokasi Rak
                 </p>
                 <p
@@ -196,93 +172,131 @@
                   --
                 </p>
               </div>
-              <div>
-                <p
-                  class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1"
-                >
-                  Ketersediaan
-                </p>
-                <p class="text-slate-200 font-medium">
-                  <span id="bookAvailable" class="text-white font-bold"
-                    >--</span
-                  >
-                  dari <span id="bookTotal">--</span>
-                </p>
-              </div>
             </div>
           </div>
         </div>
       </div>
     </main>
 
+    <!-- Modal Konfirmasi Pinjam -->
+    <div
+      id="borrowModal"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center"
+    >
+      <!-- Modal Backdrop Blur -->
+      <div
+        class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+        id="modalBackdrop"
+      ></div>
+
+      <!-- Modal Content -->
+      <div
+        class="relative bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-8 w-full max-w-md mx-4 transform scale-95 opacity-0 transition-all duration-300"
+        id="modalBox"
+      >
+        <h3 class="text-2xl font-bold text-white mb-2">
+          Konfirmasi Peminjaman
+        </h3>
+        <p class="text-slate-400 text-sm mb-6">
+          Buku
+          <strong class="text-blue-400" id="modalBookTitle">--</strong> akan
+          dipinjam selama 14 hari.
+        </p>
+
+        <form id="formBorrow">
+          <div class="mb-6">
+            <label class="block text-sm font-semibold text-slate-300 mb-2"
+              >Catatan Tambahan (Opsional)</label
+            >
+            <textarea
+              id="borrowNotes"
+              rows="3"
+              class="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              placeholder="Contoh: Tolong bungkus bukunya"
+            ></textarea>
+          </div>
+
+          <div class="flex gap-3 justify-end">
+            <button
+              type="button"
+              id="btnCancelBorrow"
+              class="px-5 py-2.5 rounded-xl font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              id="btnConfirmBorrow"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-lg shadow-blue-600/30 active:scale-95 flex items-center gap-2"
+            >
+              Konfirmasi Pinjam
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <!-- Scripts -->
     <script src="../../middleware/middleware.js"></script>
     <script src="../../Services/apiService.js"></script>
     <script src="../../Services/authService.js"></script>
     <script src="../../Services/bookService.js"></script>
+    <!-- TAMBAHKAN LOAN SERVICE -->
+    <script src="../../Services/loanService.js"></script>
 
     <script>
       $(document).ready(function () {
-        // Cek Auth
         if (typeof Middleware !== "undefined") Middleware.checkAuth();
 
-        // 1. Ambil ID Buku dari URL parameter (?id=...)
         const urlParams = new URLSearchParams(window.location.search);
         const bookId = urlParams.get("id");
+        let currentMemberId = null;
+        let currentBookTitle = "";
 
-        // Jika tidak ada ID, kembalikan ke beranda
         if (!bookId) {
           alert("Buku tidak ditemukan!");
           window.location.href = "../../index.html";
           return;
         }
 
-        // 2. Panggil API Detail Buku
+        // 1. Ambil Profil User untuk mendapatkan memberId
+        if (typeof AuthService !== "undefined") {
+          AuthService.getProfile().done(function (res) {
+            if (res.success) currentMemberId = res.data.user._id;
+          });
+        }
+
+        // 2. Load Detail Buku
         if (typeof BookService !== "undefined") {
           BookService.getBookById(bookId)
             .done(function (res) {
               if (res.data && res.data.book) {
                 renderBookDetail(res.data.book);
-
-                // Sembunyikan loading, tampilkan konten
                 $("#loadingState").hide();
                 $("#mainContent").fadeIn();
               }
             })
             .fail(function (err) {
-              alert(
-                "Gagal memuat detail buku: " +
-                  (err.responseJSON?.message || "Kesalahan server"),
-              );
+              alert("Gagal memuat detail buku.");
               window.location.href = "../../index.html";
             });
         }
 
-        // 3. Fungsi Render HTML
+        // Fungsi render detail html (Sama dengan sebelumnya, tapi simpan judul untuk modal)
         function renderBookDetail(book) {
-          // Setup Teks & Metadata
+          currentBookTitle = book.title;
           $("#bookTitle").text(book.title);
+          $("#modalBookTitle").text(book.title); // Masukkan ke Modal
           $("#bookAuthor").text(book.author || "Anonim");
-          $("#bookDescription").text(
-            book.description || "Tidak ada sinopsis tersedia untuk buku ini.",
-          );
+          $("#bookDescription").text(book.description || "Tidak ada sinopsis.");
           $("#bookYear").text(book.publishYear || "-");
           $("#bookPublisher").text(book.publisher || "-");
           $("#bookPages").text(book.pages ? `${book.pages} Hlm` : "-");
-          $("#bookIsbn").text(book.isbn || "-");
           $("#bookLocation").text(book.location || "Gudang");
           $("#bookRating").text(book.rating || "0");
           $("#bookReviews").text(book.totalReviews || "0");
+          if (book.category) $("#bookCategory").text(book.category);
 
-          $("#bookAvailable").text(book.availableCopies || 0);
-          $("#bookTotal").text(book.totalCopies || 0);
-
-          // Kategori
-          if (book.category) {
-            $("#bookCategory").text(book.category);
-          }
-
-          // Gambar Cover
           let coverImage = book.coverImage;
           if (
             !coverImage ||
@@ -301,10 +315,9 @@
           }
           $("#bookCover").attr("src", coverImage);
 
-          // Logika Ketersediaan & Tombol Pinjam
-          const $badge = $("#badgeStatus");
-          const $btnBorrow = $("#btnBorrow");
           const isAvailable = book.availableCopies > 0;
+          const $badge = $("#badgeStatus");
+          const $btnBorrow = $("#btnOpenBorrowModal");
 
           if (isAvailable && book.isActive) {
             $badge
@@ -314,12 +327,15 @@
               .removeClass("opacity-50 cursor-not-allowed hover:bg-slate-700")
               .text("Pinjam Buku Ini");
 
-            // Event klik tombol pinjam (bisa dihubungkan ke API peminjaman nanti)
+            // Event Buka Modal
             $btnBorrow.on("click", function () {
-              // Contoh placeholder untuk fitur selanjutnya
-              alert(
-                `Proses peminjaman buku: ${book.title} (ID: ${book._id}) akan segera dibuat!`,
-              );
+              if (!currentMemberId) {
+                alert(
+                  "Sedang mengambil data profil, mohon tunggu sebentar lalu coba lagi.",
+                );
+                return;
+              }
+              openModal();
             });
           } else {
             $badge
@@ -327,13 +343,68 @@
               .addClass("bg-red-500/80 border-red-400 text-white");
             $btnBorrow
               .addClass(
-                "opacity-50 cursor-not-allowed bg-slate-700 text-slate-400 hover:bg-slate-700 shadow-none",
+                "opacity-50 cursor-not-allowed bg-slate-700 text-slate-400 shadow-none",
               )
-              .removeClass("bg-blue-600 hover:bg-blue-700 shadow-lg")
               .prop("disabled", true)
-              .text(book.isActive ? "Stok Habis" : "Buku Dinonaktifkan");
+              .text("Stok Habis");
           }
         }
+
+        // --- LOGIKA MODAL & TRANSAKSI PINJAM ---
+
+        function openModal() {
+          $("#borrowModal").removeClass("hidden");
+          // Animasi Fade In & Scale Up
+          setTimeout(() => {
+            $("#modalBox")
+              .removeClass("scale-95 opacity-0")
+              .addClass("scale-100 opacity-100");
+          }, 10);
+        }
+
+        function closeModal() {
+          $("#modalBox")
+            .removeClass("scale-100 opacity-100")
+            .addClass("scale-95 opacity-0");
+          setTimeout(() => {
+            $("#borrowModal").addClass("hidden");
+            $("#formBorrow")[0].reset(); // Kosongkan input notes
+          }, 300);
+        }
+
+        $("#btnCancelBorrow, #modalBackdrop").on("click", closeModal);
+
+        // Eksekusi API saat form disubmit
+        $("#formBorrow").on("submit", function (e) {
+          e.preventDefault();
+          const $btnConfirm = $("#btnConfirmBorrow");
+          $btnConfirm
+            .prop("disabled", true)
+            .html(
+              '<div class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div> Memproses...',
+            );
+
+          const payload = {
+            bookId: bookId,
+            memberId: currentMemberId,
+            notes: $("#borrowNotes").val(),
+          };
+
+          LoanService.borrowBook(payload)
+            .done(function (res) {
+              alert("Sukses! Buku berhasil dipinjam.");
+              window.location.href = "loans.html"; // Redirect ke halaman peminjaman
+            })
+            .fail(function (err) {
+              const errorMsg =
+                err.responseJSON?.message || "Terjadi kesalahan sistem.";
+              alert("Gagal meminjam: " + errorMsg);
+            })
+            .always(function () {
+              $btnConfirm.prop("disabled", false).html("Konfirmasi Pinjam");
+              closeModal();
+            });
+        });
       });
     </script>
   </body>

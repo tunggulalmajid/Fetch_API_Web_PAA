@@ -2,69 +2,351 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard - PerpusApp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   </head>
-  <body class="bg-slate-100 flex">
-    <aside class="w-64 bg-slate-900 min-h-screen text-white p-6">
-      <h1 class="text-2xl font-bold mb-10 text-blue-400">AdminPanel</h1>
-      <nav class="space-y-4">
-        <a href="#" class="block py-2 px-4 rounded bg-blue-600">Dashboard</a>
+  <body
+    class="bg-slate-950 text-slate-200 h-screen overflow-hidden font-sans bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.15),rgba(255,255,255,0))] flex"
+  >
+    <!-- Sidebar -->
+    <aside
+      class="w-64 bg-slate-900/80 backdrop-blur-xl border-r border-slate-700/50 flex flex-col hidden md:flex transition-all duration-300 z-20"
+    >
+      <div class="h-16 flex items-center px-6 border-b border-slate-700/50">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-500/30"
+          >
+            A
+          </div>
+          <h1 class="text-xl font-bold text-white tracking-wide">
+            Admin<span class="text-emerald-500">Panel</span>
+          </h1>
+        </div>
+      </div>
+
+      <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
         <a
           href="#"
-          class="block py-2 px-4 rounded hover:bg-slate-800 transition"
-          >Buku</a
+          class="flex items-center gap-3 px-4 py-3 bg-emerald-600/20 text-emerald-400 rounded-xl font-bold border border-emerald-500/30 transition-all"
+          ><span>📊</span> Dashboard</a
+        >
+        <a
+          href="books.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>📚</span> Kelola Buku</a
+        >
+        <a
+          href="members.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>👥</span> Anggota</a
+        >
+        <a
+          href="loans.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>🔄</span> Peminjaman</a
+        >
+        <a
+          href="fines.html"
+          class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl font-medium transition-all"
+          ><span>💰</span> Keuangan & Denda</a
         >
       </nav>
-    </aside>
 
-    <div class="flex-1">
-      <nav class="bg-white shadow h-16 flex justify-between items-center px-8">
-        <h2 class="font-semibold text-slate-600 italic" id="adminName">
-          Memuat...
-        </h2>
+      <div class="p-4 border-t border-slate-700/50">
         <button
           id="btnLogout"
-          class="text-red-500 font-bold hover:text-red-700"
+          class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-xl font-bold transition-all border border-red-500/20"
         >
-          Logout
+          <span>🚪</span> Logout
         </button>
-      </nav>
-      <main class="p-8">
-        <h3 class="text-2xl font-bold text-slate-800">
-          Manajemen Perpustakaan
-        </h3>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+      <header
+        class="h-16 bg-slate-900/50 backdrop-blur-md border-b border-slate-700/50 flex items-center justify-between px-6 z-10"
+      >
+        <div class="flex items-center gap-4">
+          <button
+            id="mobileMenuBtn"
+            class="md:hidden text-slate-300 hover:text-white"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+          <h2 class="text-lg font-bold text-white hidden sm:block">
+            Ringkasan Sistem
+          </h2>
+        </div>
+        <div class="flex items-center gap-4">
+          <p class="text-sm text-slate-400">
+            Halo, <span id="adminName" class="font-bold text-white">Admin</span>
+          </p>
+        </div>
+      </header>
+
+      <!-- Dropdown Mobile -->
+      <div
+        id="mobileMenu"
+        class="hidden md:hidden absolute top-16 left-0 w-full bg-slate-800/95 backdrop-blur-xl border-b border-slate-700 z-50 shadow-2xl"
+      >
+        <nav class="px-4 pt-2 pb-4 space-y-1 sm:px-3">
+          <a
+            href="#"
+            class="block px-3 py-2 bg-emerald-600/20 text-emerald-400 rounded-md font-bold"
+            >📊 Dashboard</a
+          >
+          <a
+            href="books.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >📚 Kelola Buku</a
+          >
+          <a
+            href="members.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >👥 Anggota</a
+          >
+          <a
+            href="loans.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >🔄 Peminjaman</a
+          >
+          <a
+            href="fines.html"
+            class="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md"
+            >💰 Keuangan & Denda</a
+          >
+        </nav>
+      </div>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto p-6 md:p-8">
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div
+            class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm relative overflow-hidden"
+          >
+            <div class="absolute -right-4 -top-4 text-6xl opacity-10">📚</div>
+            <p
+              class="text-slate-400 text-sm font-bold uppercase tracking-wider mb-1"
+            >
+              Total Buku
+            </p>
+            <h3 id="statTotalBooks" class="text-3xl font-bold text-white">
+              ...
+            </h3>
+          </div>
+          <div
+            class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm relative overflow-hidden"
+          >
+            <div class="absolute -right-4 -top-4 text-6xl opacity-10">👥</div>
+            <p
+              class="text-slate-400 text-sm font-bold uppercase tracking-wider mb-1"
+            >
+              Total Anggota
+            </p>
+            <h3 id="statTotalMembers" class="text-3xl font-bold text-white">
+              ...
+            </h3>
+          </div>
+          <div
+            class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-6 backdrop-blur-sm relative overflow-hidden"
+          >
+            <div class="absolute -right-4 -top-4 text-6xl opacity-10">🔄</div>
+            <p
+              class="text-blue-400 text-sm font-bold uppercase tracking-wider mb-1"
+            >
+              Buku Dipinjam
+            </p>
+            <h3 id="statActiveLoans" class="text-3xl font-bold text-white">
+              ...
+            </h3>
+          </div>
+          <div
+            class="bg-red-500/10 border border-red-500/20 rounded-2xl p-6 backdrop-blur-sm relative overflow-hidden"
+          >
+            <div class="absolute -right-4 -top-4 text-6xl opacity-10">⚠️</div>
+            <p
+              class="text-red-400 text-sm font-bold uppercase tracking-wider mb-1"
+            >
+              Terlambat
+            </p>
+            <h3 id="statOverdueLoans" class="text-3xl font-bold text-white">
+              ...
+            </h3>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Peminjaman Terbaru -->
+          <div
+            class="lg:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-6 shadow-2xl backdrop-blur-xl flex flex-col"
+          >
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-white">Peminjaman Terbaru</h3>
+              <a
+                href="loans.html"
+                class="text-sm text-emerald-400 hover:text-emerald-300 font-bold"
+                >Lihat Semua →</a
+              >
+            </div>
+            <div class="overflow-x-auto flex-grow">
+              <table class="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
+                  <tr
+                    class="border-b border-slate-700/50 text-slate-400 text-xs uppercase tracking-wider"
+                  >
+                    <th class="pb-3 font-semibold">Kode</th>
+                    <th class="pb-3 font-semibold">Peminjam</th>
+                    <th class="pb-3 font-semibold">Buku</th>
+                    <th class="pb-3 font-semibold">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="recentLoansTable" class="text-sm">
+                  <tr>
+                    <td colspan="4" class="py-8 text-center text-slate-500">
+                      Memuat data terbaru...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Buku Terpopuler -->
+          <div
+            class="lg:col-span-1 bg-white/5 border border-white/10 rounded-3xl p-6 shadow-2xl backdrop-blur-xl flex flex-col"
+          >
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-white">Buku Terpopuler</h3>
+              <span class="text-xl">🔥</span>
+            </div>
+            <div
+              id="popularBooksList"
+              class="flex flex-col gap-4 overflow-y-auto max-h-[400px]"
+            >
+              <p class="text-center text-slate-500 py-8">Memuat buku...</p>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
 
+    <!-- Scripts -->
     <script src="../../middleware/middleware.js"></script>
     <script src="../../Services/apiService.js"></script>
     <script src="../../Services/authService.js"></script>
+    <script src="../../Services/memberService.js"></script>
+
     <script>
       $(document).ready(function () {
-        if (Middleware.checkAuth()) {
-          Middleware.isAdmin();
-          AuthService.getProfile()
-            .done(function (res) {
-              if (res.success) {
-                // Akses: res -> data -> user -> name
-                $("#adminName").text("Halo Admin, " + res.data.user.name);
-              }
-            })
-            .fail(function (err) {
-              if (err.status === 401) {
-                AuthService.clearSession();
-                window.location.href = "../auth/login.html";
-              }
-            });
+        $("#mobileMenuBtn").on("click", function () {
+          $("#mobileMenu").slideToggle("fast");
+        });
+        if (typeof Middleware !== "undefined") Middleware.checkAuth();
+        if (localStorage.getItem("user_role") !== "admin") {
+          window.location.href = "../../index.html";
+          return;
         }
+
+        if (typeof AuthService !== "undefined") {
+          AuthService.getProfile().done((res) => {
+            if (res.success) $("#adminName").text(res.data.user.name);
+          });
+        }
+
         $("#btnLogout").on("click", function () {
-          AuthService.logout().always(() => {
+          if (confirm("Keluar dari panel admin?")) {
             AuthService.clearSession();
             window.location.href = "../auth/login.html";
-          });
+          }
         });
+
+        if (typeof MemberService !== "undefined") {
+          MemberService.getDashboardStats()
+            .done(function (res) {
+              if (res.success && res.data) {
+                const stats = res.data.stats;
+                $("#statTotalBooks").text(stats.totalBooks || 0);
+                $("#statTotalMembers").text(stats.totalMembers || 0);
+                $("#statActiveLoans").text(stats.activeLoans || 0);
+                $("#statOverdueLoans").text(stats.overdueLoans || 0);
+
+                const $loansTable = $("#recentLoansTable");
+                $loansTable.empty();
+                if (
+                  !res.data.recentLoans ||
+                  res.data.recentLoans.length === 0
+                ) {
+                  $loansTable.html(
+                    '<tr><td colspan="4" class="py-8 text-center text-slate-500">Belum ada transaksi terbaru.</td></tr>',
+                  );
+                } else {
+                  res.data.recentLoans.forEach((loan) => {
+                    let statusHtml =
+                      loan.status === "returned"
+                        ? '<span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-[10px] uppercase font-bold">Selesai</span>'
+                        : loan.lateDays > 0
+                          ? '<span class="bg-red-500/20 text-red-400 border border-red-500/30 px-2 py-1 rounded text-[10px] uppercase font-bold">Terlambat</span>'
+                          : '<span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-1 rounded text-[10px] uppercase font-bold">Dipinjam</span>';
+                    $loansTable.append(
+                      `<tr class="border-b border-slate-700/50 hover:bg-slate-800/50 transition-colors"><td class="py-3 font-mono text-xs text-slate-400">${loan.loanCode || "-"}</td><td class="py-3 font-medium text-white">${loan.member ? loan.member.name : "Anonim"}</td><td class="py-3 text-slate-300 truncate max-w-[200px]">${loan.book ? loan.book.title : "Buku Dihapus"}</td><td class="py-3">${statusHtml}</td></tr>`,
+                    );
+                  });
+                }
+
+                const $booksList = $("#popularBooksList");
+                $booksList.empty();
+                if (
+                  !res.data.popularBooks ||
+                  res.data.popularBooks.length === 0
+                ) {
+                  $booksList.html(
+                    '<p class="text-center text-slate-500 py-8">Belum ada data buku.</p>',
+                  );
+                } else {
+                  res.data.popularBooks.forEach((book, index) => {
+                    let rankBadge =
+                      index === 0
+                        ? `🥇`
+                        : index === 1
+                          ? `🥈`
+                          : index === 2
+                            ? `🥉`
+                            : `<span class="text-slate-500 font-bold w-6 text-center">${index + 1}</span>`;
+                    $booksList.append(
+                      `<div class="flex items-center gap-4 p-3 bg-slate-900/40 border border-slate-700/50 rounded-xl hover:bg-slate-800 transition-colors"><span class="text-xl w-6 text-center">${rankBadge}</span><div class="flex-grow overflow-hidden"><h4 class="font-bold text-white text-sm truncate">${book.title}</h4><div class="flex items-center gap-2 mt-0.5"><span class="text-xs text-slate-400 truncate">${book.author}</span><span class="text-[10px] text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded font-bold border border-yellow-500/20">⭐ ${book.rating}</span></div></div></div>`,
+                    );
+                  });
+                }
+              }
+            })
+            .fail(function () {
+              $(
+                "#statTotalBooks, #statTotalMembers, #statActiveLoans, #statOverdueLoans",
+              ).text("-");
+              $("#recentLoansTable").html(
+                '<tr><td colspan="4" class="py-8 text-center text-red-400">Gagal memuat data</td></tr>',
+              );
+              $("#popularBooksList").html(
+                '<p class="text-center text-red-400 py-8">Gagal memuat buku</p>',
+              );
+            });
+        }
       });
     </script>
   </body>

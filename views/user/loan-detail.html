@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Peminjaman - PerpusApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body
+    class="bg-slate-950 text-slate-200 min-h-screen font-sans bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.15),rgba(255,255,255,0))] relative"
+  >
+    <!-- Navbar -->
+    <nav
+      class="sticky top-0 z-40 bg-slate-900/70 backdrop-blur-lg border-b border-slate-700/50 shadow-lg px-6 py-4 flex justify-between items-center"
+    >
+      <a
+        href="loans.html"
+        class="text-blue-400 hover:text-blue-300 font-bold flex items-center gap-2 transition-colors group"
+      >
+        <span class="transform group-hover:-translate-x-1 transition-transform"
+          >←</span
+        >
+        Kembali ke Daftar
+      </a>
+      <h1 class="text-xl font-bold text-white tracking-wide">
+        Detail <span class="text-blue-500">Transaksi</span>
+      </h1>
+    </nav>
+
+    <!-- State Loading -->
+    <div
+      id="loadingState"
+      class="flex justify-center items-center min-h-[60vh]"
+    >
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"
+      ></div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="max-w-4xl mx-auto p-6 sm:p-8 mt-4 hidden">
+      <div
+        class="bg-white/5 border border-white/10 rounded-3xl shadow-2xl backdrop-blur-xl overflow-hidden p-6 md:p-10 relative"
+      >
+        <!-- Header Transaksi -->
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-700/50 pb-6 mb-8 gap-4"
+        >
+          <div>
+            <p
+              class="text-slate-400 text-sm font-semibold uppercase tracking-widest mb-1"
+            >
+              Kode Transaksi
+            </p>
+            <h2
+              id="loanCode"
+              class="text-3xl font-bold text-white font-mono bg-slate-900/50 px-4 py-1 rounded-xl inline-block border border-slate-700"
+            >
+              --
+            </h2>
+          </div>
+          <div
+            id="loanStatusBadge"
+            class="px-5 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-md border text-center whitespace-nowrap"
+          >
+            Memuat Status...
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+          <!-- Kiri: Info Buku & Tombol Kembali -->
+          <div class="md:col-span-4 flex flex-col gap-4">
+            <h3 class="text-lg font-bold text-white mb-2">
+              Buku yang Dipinjam
+            </h3>
+            <div
+              class="aspect-[2/3] bg-slate-800 rounded-2xl overflow-hidden shadow-lg shadow-black/50 border border-slate-700"
+            >
+              <img
+                id="bookCover"
+                src=""
+                alt="Cover Buku"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div class="text-center mt-2">
+              <h4
+                id="bookTitle"
+                class="text-lg font-bold text-white line-clamp-2 leading-tight"
+              >
+                --
+              </h4>
+              <p id="bookAuthor" class="text-slate-400 text-sm mt-1">--</p>
+            </div>
+
+            <!-- Tombol Pengembalian (Disembunyikan secara default) -->
+            <button
+              id="btnOpenReturnModal"
+              class="hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-emerald-600/30 active:scale-95 flex justify-center items-center gap-2 mt-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              Kembalikan Buku
+            </button>
+          </div>
+
+          <!-- Kanan: Detail Data -->
+          <div class="md:col-span-8 flex flex-col justify-center">
+            <div
+              class="bg-slate-900/50 rounded-2xl border border-slate-700/50 p-6 space-y-6"
+            >
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div>
+                  <p
+                    class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1"
+                  >
+                    Tgl Pinjam
+                  </p>
+                  <p id="loanDate" class="text-slate-200 font-medium">--</p>
+                </div>
+                <div>
+                  <p
+                    class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1"
+                  >
+                    Tenggat Waktu
+                  </p>
+                  <p id="dueDate" class="text-slate-200 font-medium">--</p>
+                </div>
+                <div id="returnDateContainer" class="hidden">
+                  <p
+                    class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1"
+                  >
+                    Tgl Kembali
+                  </p>
+                  <p id="returnDate" class="text-emerald-400 font-bold">--</p>
+                </div>
+              </div>
+
+              <hr class="border-slate-700/50" />
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p
+                    class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1"
+                  >
+                    Keterlambatan
+                  </p>
+                  <p id="lateDays" class="text-slate-200 font-medium">--</p>
+                </div>
+                <div>
+                  <p
+                    class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1"
+                  >
+                    Denda
+                  </p>
+                  <div class="flex items-center gap-2">
+                    <p
+                      id="fineAmount"
+                      class="text-slate-200 font-medium font-mono"
+                    >
+                      --
+                    </p>
+                    <span
+                      id="fineStatus"
+                      class="hidden text-[10px] font-bold px-2 py-0.5 rounded uppercase"
+                    ></span>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="border-slate-700/50" />
+
+              <div>
+                <p
+                  class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1"
+                >
+                  Catatan Peminjaman
+                </p>
+                <p
+                  id="loanNotes"
+                  class="text-slate-300 bg-slate-800/50 p-3 rounded-xl italic text-sm mt-2 border border-slate-700/30"
+                >
+                  Tidak ada catatan.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Konfirmasi Pengembalian -->
+    <div
+      id="returnModal"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center"
+    >
+      <div
+        class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+        id="returnModalBackdrop"
+      ></div>
+
+      <div
+        class="relative bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-8 w-full max-w-md mx-4 transform scale-95 opacity-0 transition-all duration-300"
+        id="returnModalBox"
+      >
+        <h3 class="text-2xl font-bold text-white mb-2">
+          Konfirmasi Pengembalian
+        </h3>
+        <p class="text-slate-400 text-sm mb-6">
+          Apakah Anda yakin ingin mengembalikan buku
+          <strong class="text-emerald-400" id="modalReturnTitle">--</strong>
+          sekarang? <br /><br />
+          <span class="text-xs italic text-slate-500"
+            >*Jika terlambat, denda akan otomatis dihitung oleh sistem.</span
+          >
+        </p>
+
+        <div class="flex gap-3 justify-end">
+          <button
+            type="button"
+            id="btnCancelReturn"
+            class="px-5 py-2.5 rounded-xl font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+          >
+            Batal
+          </button>
+          <button
+            type="button"
+            id="btnConfirmReturn"
+            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-lg shadow-emerald-600/30 active:scale-95 flex items-center gap-2"
+          >
+            Ya, Kembalikan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../middleware/middleware.js"></script>
+    <script src="../../Services/apiService.js"></script>
+    <script src="../../Services/authService.js"></script>
+    <script src="../../Services/loanService.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        if (typeof Middleware !== "undefined") Middleware.checkAuth();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const loanId = urlParams.get("id");
+        let currentLoanStatus = "";
+
+        if (!loanId) {
+          alert("Transaksi tidak ditemukan!");
+          window.location.href = "loans.html";
+          return;
+        }
+
+        // --- 1. AMBIL DATA DETAIL TRANSAKSI ---
+        if (typeof LoanService !== "undefined") {
+          LoanService.getLoanById(loanId)
+            .done(function (res) {
+              if (res.data && res.data.loan) {
+                renderLoanDetail(res.data.loan);
+                $("#loadingState").hide();
+                $("#mainContent").fadeIn();
+              }
+            })
+            .fail(function (err) {
+              alert("Gagal memuat detail transaksi.");
+              window.location.href = "loans.html";
+            });
+        }
+
+        const formatRupiah = (number) =>
+          new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            maximumFractionDigits: 0,
+          }).format(number);
+        const formatDate = (dateStr) => {
+          if (!dateStr) return "-";
+          return new Date(dateStr).toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          });
+        };
+
+        // --- 2. RENDER HTML ---
+        function renderLoanDetail(loan) {
+          currentLoanStatus = loan.status;
+
+          $("#loanCode").text(
+            loan.loanCode || loan._id.substring(0, 8).toUpperCase(),
+          );
+
+          const book = typeof loan.book === "object" ? loan.book : {};
+          $("#bookTitle").text(book.title || "Judul tidak tersedia");
+          $("#modalReturnTitle").text(book.title || "buku ini"); // Simpan ke modal
+          $("#bookAuthor").text(book.author || "Penulis tidak tersedia");
+
+          let coverImage = book.coverImage;
+          if (
+            !coverImage ||
+            coverImage === "string" ||
+            coverImage === "----" ||
+            coverImage === ""
+          ) {
+            const initials = (book.title || "BK")
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .substring(0, 2)
+              .toUpperCase();
+            coverImage = `https://ui-avatars.com/api/?name=${initials}&background=1e293b&color=94a3b8&size=500&font-size=0.33`;
+          }
+          $("#bookCover").attr("src", coverImage);
+
+          $("#loanDate").text(formatDate(loan.loanDate));
+          $("#dueDate").text(formatDate(loan.dueDate));
+
+          if (loan.returnDate) {
+            $("#returnDateContainer").removeClass("hidden");
+            $("#returnDate").text(formatDate(loan.returnDate));
+          }
+
+          if (loan.lateDays > 0) {
+            $("#lateDays")
+              .text(`${loan.lateDays} Hari`)
+              .addClass("text-red-400 font-bold");
+            $("#fineAmount")
+              .text(formatRupiah(loan.fineAmount))
+              .addClass("text-red-400 font-bold");
+
+            $("#fineStatus").removeClass("hidden");
+            if (loan.finePaid) {
+              $("#fineStatus")
+                .text("Lunas")
+                .addClass(
+                  "bg-emerald-500/20 text-emerald-400 border border-emerald-500/50",
+                );
+            } else {
+              $("#fineStatus")
+                .text("Belum Dibayar")
+                .addClass(
+                  "bg-red-500/20 text-red-400 border border-red-500/50",
+                );
+            }
+          } else {
+            $("#lateDays").text("0 Hari (Tepat Waktu)");
+            $("#fineAmount").text("Rp 0");
+          }
+
+          if (loan.notes && loan.notes !== "string") {
+            $("#loanNotes").text(loan.notes);
+          }
+
+          // Badge & Tampilkan Tombol Kembalikan jika belum dikembalikan
+          const $badge = $("#loanStatusBadge");
+          const $btnReturn = $("#btnOpenReturnModal");
+          const isReturned = loan.status === "returned";
+          const isOverdue = loan.lateDays > 0 && loan.status === "borrowed";
+
+          if (isReturned) {
+            $badge
+              .text("Transaksi Selesai")
+              .addClass("bg-slate-700/80 border-slate-500 text-slate-200");
+          } else {
+            // Tampilkan tombol karena status masih "borrowed"
+            $btnReturn.removeClass("hidden").hide().fadeIn();
+
+            if (isOverdue) {
+              $badge
+                .text("Terlambat")
+                .addClass(
+                  "bg-red-500/80 border-red-400 text-white animate-pulse",
+                );
+            } else {
+              $badge
+                .text("Sedang Dipinjam")
+                .addClass("bg-blue-500/80 border-blue-400 text-white");
+            }
+          }
+        }
+
+        // --- 3. LOGIKA MODAL PENGEMBALIAN ---
+        function openModal() {
+          $("#returnModal").removeClass("hidden");
+          setTimeout(() => {
+            $("#returnModalBox")
+              .removeClass("scale-95 opacity-0")
+              .addClass("scale-100 opacity-100");
+          }, 10);
+        }
+
+        function closeModal() {
+          $("#returnModalBox")
+            .removeClass("scale-100 opacity-100")
+            .addClass("scale-95 opacity-0");
+          setTimeout(() => {
+            $("#returnModal").addClass("hidden");
+          }, 300);
+        }
+
+        $("#btnOpenReturnModal").on("click", openModal);
+        $("#btnCancelReturn, #returnModalBackdrop").on("click", closeModal);
+
+        // --- 4. EKSEKUSI API PENGEMBALIAN BUKU ---
+        $("#btnConfirmReturn").on("click", function () {
+          const $btn = $(this);
+          $btn
+            .prop("disabled", true)
+            .html(
+              '<div class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div> Memproses...',
+            );
+
+          LoanService.returnBook(loanId)
+            .done(function (res) {
+              alert("Buku berhasil dikembalikan!");
+              // Refresh halaman agar data terbaru (termasuk denda/tanggal kembali) termuat
+              window.location.reload();
+            })
+            .fail(function (err) {
+              const msg =
+                err.responseJSON?.message || "Gagal mengembalikan buku.";
+              alert("Error: " + msg);
+            })
+            .always(function () {
+              $btn.prop("disabled", false).html("Ya, Kembalikan");
+              closeModal();
+            });
+        });
+      });
+    </script>
+  </body>
+</html>

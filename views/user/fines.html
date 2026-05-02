@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tagihanku - PerpusApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body
+    class="bg-slate-950 text-slate-200 min-h-screen font-sans bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(30,58,138,0.15),rgba(255,255,255,0))] relative"
+  >
+    <nav
+      class="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-lg border-b border-slate-700/50 shadow-lg"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/30"
+            >
+              P
+            </div>
+            <h1 class="text-xl font-bold text-white tracking-wide">
+              Perpus<span class="text-blue-500">App</span>
+            </h1>
+          </div>
+          <div class="hidden md:flex items-center gap-8">
+            <a
+              href="../../index.html"
+              class="text-slate-300 hover:text-white transition-colors"
+              >Beranda</a
+            >
+            <a
+              href="loans.html"
+              class="text-slate-300 hover:text-white transition-colors"
+              >Peminjamanku</a
+            >
+            <a
+              href="history.html"
+              class="text-slate-300 hover:text-white transition-colors"
+              >Riwayat</a
+            >
+            <a href="#" class="text-blue-400 font-medium transition-colors"
+              >Tagihan</a
+            >
+          </div>
+          <div class="hidden md:flex items-center gap-5">
+            <a href="profile.html" class="text-right group">
+              <p
+                id="memberName"
+                class="text-sm font-semibold text-slate-100 group-hover:text-blue-400 transition-colors"
+              >
+                Memuat...
+              </p>
+              <p
+                id="memberCode"
+                class="text-xs text-slate-400 uppercase group-hover:text-slate-300"
+              >
+                Lihat Profil
+              </p>
+            </a>
+          </div>
+          <div class="md:hidden flex items-center">
+            <button
+              id="mobileMenuBtn"
+              class="text-slate-300 hover:text-white focus:outline-none"
+            >
+              <svg
+                class="w-7 h-7"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        id="mobileMenu"
+        class="hidden md:hidden bg-slate-800/95 backdrop-blur-xl border-b border-slate-700"
+      >
+        <div class="px-4 pt-2 pb-4 space-y-1 sm:px-3">
+          <a
+            href="../../index.html"
+            class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white"
+            >Beranda</a
+          >
+          <a
+            href="loans.html"
+            class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white"
+            >Peminjamanku</a
+          >
+          <a
+            href="history.html"
+            class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white"
+            >Riwayat</a
+          >
+          <a
+            href="#"
+            class="block px-3 py-2 rounded-md text-base font-medium text-blue-400 bg-slate-700/50"
+            >Tagihan</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 sm:p-8">
+      <header
+        class="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-4"
+      >
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">
+            Tagihan & Denda
+          </h2>
+          <p class="text-slate-400 text-sm md:text-base max-w-2xl">
+            Selesaikan tunggakan denda Anda agar dapat terus meminjam buku
+            favorit di PerpusApp.
+          </p>
+        </div>
+
+        <div
+          class="flex bg-slate-900/50 p-1 rounded-xl border border-slate-700 backdrop-blur-sm self-start"
+        >
+          <button
+            data-status="unpaid"
+            class="filter-btn active bg-blue-600 text-white shadow-lg shadow-blue-500/20 px-4 py-2 rounded-lg text-sm font-bold transition-all"
+          >
+            Belum Lunas
+          </button>
+          <button
+            data-status="paid"
+            class="filter-btn text-slate-400 hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition-all"
+          >
+            Riwayat Lunas
+          </button>
+        </div>
+      </header>
+
+      <div
+        id="finesContainer"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        <div class="col-span-full flex justify-center py-12">
+          <div
+            class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"
+          ></div>
+        </div>
+      </div>
+
+      <div
+        id="paginationContainer"
+        class="flex justify-center items-end gap-2 mt-12 mb-8 flex-wrap"
+      ></div>
+    </main>
+
+    <div
+      id="payModal"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center overflow-y-auto pt-10 pb-10"
+    >
+      <div
+        class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm"
+        id="payModalBackdrop"
+      ></div>
+      <div
+        class="relative bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl w-full max-w-md mx-4 transform scale-95 opacity-0 transition-all duration-300"
+        id="payModalBox"
+      >
+        <div
+          class="p-6 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30 rounded-t-3xl"
+        >
+          <h3 class="text-xl font-bold text-white">Konfirmasi Pembayaran</h3>
+          <button id="btnCancelPayTop" class="text-slate-400 hover:text-white">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <form id="formPayFine" class="p-6">
+          <div class="text-center mb-6">
+            <p
+              class="text-slate-400 text-sm mb-1 uppercase font-bold tracking-widest"
+            >
+              Total Bayar
+            </p>
+            <h2
+              id="payAmountDisplay"
+              class="text-4xl font-bold text-blue-400 font-mono"
+            >
+              Rp 0
+            </h2>
+            <p
+              id="payReasonDisplay"
+              class="text-sm text-slate-500 mt-2 italic capitalize"
+            >
+              Keterlambatan
+            </p>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-300 mb-2"
+                >Pilih Metode Pembayaran</label
+              >
+              <select
+                id="pMethod"
+                class="w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold"
+                required
+              >
+                <option value="tunai">💵 Bayar Tunai ke Kasir</option>
+                <option value="transfer">🏦 Transfer Bank</option>
+                <option value="lainnya">📱 E-Wallet / Lainnya</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-300 mb-2"
+                >Catatan Tambahan (Opsional)</label
+              >
+              <input
+                type="text"
+                id="pNotes"
+                placeholder="Contoh: Sudah transfer ke rek bank"
+                class="w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-xl text-white outline-none"
+              />
+            </div>
+          </div>
+          <div
+            class="flex gap-3 justify-end mt-8 pt-6 border-t border-slate-700/50"
+          >
+            <button
+              type="button"
+              id="btnCancelPay"
+              class="px-5 py-2.5 rounded-xl font-bold text-slate-300 hover:bg-slate-800 transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              id="btnSubmitPay"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-lg shadow-blue-600/30"
+            >
+              Bayar & Selesaikan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="../../middleware/middleware.js"></script>
+    <script src="../../Services/apiService.js"></script>
+    <script src="../../Services/authService.js"></script>
+    <script src="../../Services/fineService.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $("#mobileMenuBtn").on("click", () =>
+          $("#mobileMenu").slideToggle("fast"),
+        );
+        if (typeof Middleware !== "undefined") Middleware.checkAuth();
+
+        if (typeof AuthService !== "undefined") {
+          AuthService.getProfile().done(function (res) {
+            if (res.success) {
+              $("#memberName").text(res.data.user.name);
+              $("#memberCode").text(res.data.user.memberCode || "Member");
+            }
+          });
+        }
+
+        const formatRp = (num) =>
+          new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            maximumFractionDigits: 0,
+          }).format(num);
+
+        let currentStatus = "unpaid",
+          currentPage = 1,
+          currentFineId = null;
+
+        // --- FETCH DATA ---
+        function fetchFines(status = "unpaid", page = 1) {
+          currentStatus = status;
+          currentPage = page;
+          $("#finesContainer").html(
+            `<div class="col-span-full flex justify-center py-12"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div></div>`,
+          );
+          $("#paginationContainer").empty();
+
+          FineService.getFines({ page: page, limit: 9, status: status })
+            .done((res) => {
+              if (res.data && res.data.fines && res.data.fines.length > 0) {
+                renderFines(res.data.fines);
+                if (res.pagination) renderPagination(res.pagination);
+              } else {
+                renderEmptyState(status);
+              }
+            })
+            .fail(() =>
+              $("#finesContainer").html(
+                '<p class="text-red-400 col-span-full text-center py-10">Gagal memuat data.</p>',
+              ),
+            );
+        }
+
+        function renderEmptyState(status) {
+          const isUnpaid = status === "unpaid";
+          $("#finesContainer").html(
+            `<div class="col-span-full bg-white/5 border border-white/10 rounded-3xl p-10 text-center backdrop-blur-sm"><div class="text-6xl mb-4">${isUnpaid ? "🎉" : "📄"}</div><h3 class="text-2xl font-bold text-white mb-2">${isUnpaid ? "Tidak Ada Tagihan" : "Belum Ada Riwayat"}</h3><p class="text-slate-400 max-w-md mx-auto">${isUnpaid ? "Anda tidak memiliki denda saat ini. Bagus!" : "Anda belum memiliki riwayat denda yang lunas."}</p></div>`,
+          );
+        }
+
+        function renderFines(fines) {
+          const $container = $("#finesContainer");
+          $container.empty();
+          fines.forEach((fine) => {
+            const isPaid = fine.status === "paid";
+            const dateStr = new Date(fine.createdAt).toLocaleDateString(
+              "id-ID",
+              { day: "numeric", month: "short", year: "numeric" },
+            );
+
+            // Tombol Bayar jika belum lunas
+            const actionBtn = !isPaid
+              ? `<button class="btn-pay w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl transition-all" data-id="${fine._id}" data-amount="${fine.amount}" data-reason="${fine.reason || "Keterlambatan"}">Bayar Sekarang</button>`
+              : "";
+
+            $container.append(`
+              <div class="bg-slate-900/40 border ${isPaid ? "border-emerald-500/20" : "border-red-500/30"} rounded-2xl p-6 backdrop-blur-sm flex flex-col group relative overflow-hidden">
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                  <span class="px-2.5 py-1 rounded-md text-[10px] uppercase font-bold border ${isPaid ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"}">${isPaid ? "✅ Lunas" : "⚠️ Belum Dibayar"}</span>
+                  <span class="text-xs text-slate-500">${dateStr}</span>
+                </div>
+                <div class="mb-4 relative z-10">
+                  <p class="text-slate-400 text-xs uppercase font-bold mb-1">Nominal</p>
+                  <h3 class="text-3xl font-mono font-bold ${isPaid ? "text-white" : "text-red-400"}">${formatRp(fine.amount)}</h3>
+                </div>
+                <div class="bg-slate-950/50 rounded-xl p-4 border border-slate-800 flex-grow">
+                  <div class="flex justify-between mb-2"><span class="text-xs text-slate-500">Alasan</span><span class="text-sm text-slate-200 capitalize font-medium">${fine.reason || "Keterlambatan"}</span></div>
+                  <div class="flex justify-between border-t border-slate-800 pt-2"><span class="text-xs text-slate-500">ID Tagihan</span><span class="text-[10px] text-slate-500 font-mono">${fine._id}</span></div>
+                </div>
+                ${actionBtn}
+              </div>
+            `);
+          });
+        }
+
+        function renderPagination(pagination) {
+          const $container = $("#paginationContainer");
+          $container.empty();
+          if (!pagination || pagination.totalPages <= 1) return;
+          const { page, totalPages, hasNextPage, hasPrevPage } = pagination;
+          let html = `<button data-page="${page - 1}" class="page-btn px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-xl transition-all ${!hasPrevPage ? "opacity-50 pointer-events-none" : "hover:bg-slate-700"}">Prev</button>`;
+          for (
+            let i = Math.max(1, page - 2);
+            i <= Math.min(totalPages, page + 2);
+            i++
+          ) {
+            html += `<button data-page="${i}" class="page-btn w-10 h-10 border rounded-xl font-bold transition-all ${i === page ? "bg-blue-600 text-white border-blue-500" : "bg-slate-900/50 hover:bg-slate-700"}">${i}</button>`;
+          }
+          html += `<button data-page="${page + 1}" class="page-btn px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-xl transition-all ${!hasNextPage ? "opacity-50 pointer-events-none" : "hover:bg-slate-700"}">Next</button>`;
+          $container.append(html);
+        }
+
+        // --- EVENTS ---
+        fetchFines();
+        $(".filter-btn").on("click", function () {
+          $(".filter-btn")
+            .removeClass("active bg-blue-600 text-white shadow-lg")
+            .addClass("text-slate-400 bg-transparent shadow-none");
+          $(this)
+            .removeClass("text-slate-400 bg-transparent shadow-none")
+            .addClass("active bg-blue-600 text-white shadow-lg");
+          fetchFines($(this).data("status"), 1);
+        });
+        $(document).on("click", ".page-btn", function () {
+          fetchFines(currentStatus, $(this).data("page"));
+          $("html, body").animate({ scrollTop: 0 }, 400);
+        });
+
+        // --- MODAL PAY LOGIC ---
+        function toggleModal(show) {
+          if (show) {
+            $("#payModal").removeClass("hidden");
+            setTimeout(
+              () =>
+                $("#payModalBox")
+                  .removeClass("scale-95 opacity-0")
+                  .addClass("scale-100 opacity-100"),
+              10,
+            );
+          } else {
+            $("#payModalBox")
+              .removeClass("scale-100 opacity-100")
+              .addClass("scale-95 opacity-0");
+            setTimeout(() => $("#payModal").addClass("hidden"), 300);
+          }
+        }
+
+        $(document).on("click", ".btn-pay", function () {
+          currentFineId = $(this).data("id");
+          $("#payAmountDisplay").text(formatRp($(this).data("amount")));
+          $("#payReasonDisplay").text($(this).data("reason"));
+          $("#formPayFine")[0].reset();
+          toggleModal(true);
+        });
+
+        $("#btnCancelPay, #btnCancelPayTop, #payModalBackdrop").on(
+          "click",
+          () => toggleModal(false),
+        );
+
+        $("#formPayFine").on("submit", function (e) {
+          e.preventDefault();
+          const $btn = $("#btnSubmitPay");
+          $btn.prop("disabled", true).html("Memproses...");
+
+          // PAYLOAD REVISI: Menggunakan lowercase sesuai Enum backend
+          const payload = {
+            paymentMethod: $("#pMethod").val(),
+            notes: $("#pNotes").val(),
+          };
+
+          FineService.payFine(currentFineId, payload)
+            .done(() => {
+              alert("Pembayaran berhasil diproses! Terima kasih.");
+              toggleModal(false);
+              fetchFines(currentStatus, currentPage);
+            })
+            .fail((err) =>
+              alert(
+                "Gagal memproses pembayaran: " +
+                  (err.responseJSON?.message || "Kesalahan Server"),
+              ),
+            )
+            .always(() =>
+              $btn.prop("disabled", false).html("Bayar & Selesaikan"),
+            );
+        });
+      });
+    </script>
+  </body>
+</html>
